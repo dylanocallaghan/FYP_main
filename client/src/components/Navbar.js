@@ -6,6 +6,7 @@ export default function Navbar({ loggedIn, handleLogout }) {
       <Link to="/dashboard">Dashboard</Link>
       <Link to="/chat">💬 Chat</Link>
       <Link to="/matches">❤️ Matches</Link>
+      <Link to="/listings">🏠 Listings</Link>
       <Link to="/create">📦 Create Listing</Link>
 
       <div style={{ marginLeft: "auto" }}>

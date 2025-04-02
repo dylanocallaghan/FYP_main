@@ -1,0 +1,25 @@
+.listings-container {
+    padding: 2rem;
+  }
+  
+  .controls {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+  
+  .controls input,
+  .controls select {
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
+  
+  .listing-card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: #f9f9f9;
+  }
+  

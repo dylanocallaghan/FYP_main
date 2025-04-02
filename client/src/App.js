@@ -7,8 +7,10 @@ import CreateListing from "./pages/CreateListing";
 import Profile from "./pages/Profile";
 import MatchResults from "./pages/MatchResults";
 import UserProfile from "./pages/UserProfile";
-import Chat from "./pages/Chat"; // ✅ Import Chat
+import Chat from "./pages/Chat"; 
 import ProtectedRoute from "./components/ProtectedRoute";
+import Listings from "./pages/Listings"; 
+
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -57,6 +59,14 @@ function App() {
             </ProtectedRoute>
           } />
           <Route path="*" element={<Navigate to={loggedIn ? "/" : "/login"} />} />
+          <Route
+            path="/listings"
+            element={
+              <ProtectedRoute loggedIn={loggedIn}>
+                <Listings />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </div>
     </BrowserRouter>
