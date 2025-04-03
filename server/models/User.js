@@ -4,6 +4,13 @@ const userSchema = new mongoose.Schema({
   name: String,
   email: { type: String, unique: true },
   password: String,
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+    lowercase: true,
+    trim: true,
+  },  
   quizResponses: {
     cleanliness: Number,
     sleepSchedule: Number,

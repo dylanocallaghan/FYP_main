@@ -1,24 +1,20 @@
-// client/src/pages/MatchResults.js
-
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { StreamChat } from "stream-chat";
 
 export default function MatchResults() {
   const [matches, setMatches] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchMatches = async () => {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch("http://localhost:5000/api/auth/matches", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch matches");
-        }
+        if (!response.ok) throw new Error("Failed to fetch matches");
 
         const data = await response.json();
         setMatches(data);
@@ -30,19 +26,53 @@ export default function MatchResults() {
     fetchMatches();
   }, []);
 
+  const startChatWithUser = async (otherUsername) => {
+    const client = StreamChat.getInstance("yduz4z95nncj");
+    const currentUser = localStorage.getItem("username");
+
+    console.log("🤖 Starting chat between:", currentUser, "and", otherUsername);
+
+    if (!currentUser || !otherUsername) {
+      alert("Missing username(s). Chat cannot start.");
+      return;
+    }
+
+    if (!client.userID) {
+      const res = await fetch("http://localhost:5000/stream/getToken", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: currentUser }),
+      });
+      const { token } = await res.json();
+      await client.connectUser({ id: currentUser }, token);
+    }
+
+    const channel = client.channel("messaging", {
+      members: [currentUser, otherUsername],
+    });
+
+    await channel.watch();
+    localStorage.setItem("activeChannelId", channel.id);
+    navigate("/chat");
+  };
+
   return (
     <div style={{ padding: "2em" }}>
       <h2>Top Matches</h2>
       <ul>
-        {matches.map((m) => (
-          <li key={m._id}>
-            <strong>{m.name}</strong> ({m.email}) – Match Score: {m.score}%
-            &nbsp;
-            <Link to={`/profile/${m._id}`} state={{ profile: m }}>
-              View Profile
-            </Link>
-          </li>
-        ))}
+        {matches
+          .filter((m) => m.username) // ✅ skip undefined usernames
+          .map((m) => (
+            <li key={m.id}>
+              <strong>{m.name}</strong> ({m.username}) – Match Score: {m.score}%
+              &nbsp;
+              <Link to={`/profile/${m.id}`} state={{ profile: m }}>
+                View Profile
+              </Link>
+              &nbsp; | &nbsp;
+              <button onClick={() => startChatWithUser(m.username)}>Chat</button>
+            </li>
+          ))}
       </ul>
     </div>
   );

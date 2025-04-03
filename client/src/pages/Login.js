@@ -11,7 +11,6 @@ export default function Login({ setLoggedIn }) {
   useEffect(() => {
     if (location.state?.message) {
       setRedirectMessage(location.state.message);
-      // Clear the message so it doesn't persist on reload
       navigate(location.pathname, { replace: true, state: {} });
     }
   }, [location, navigate]);
@@ -31,6 +30,7 @@ export default function Login({ setLoggedIn }) {
       if (res.ok) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("username", data.user.username); // ✅ for Stream
         setLoggedIn(true);
         navigate("/dashboard");
       } else {

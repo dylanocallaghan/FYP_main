@@ -1,14 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const { registerUser, loginUser } = require("../controllers/authController");
 const { getMatches } = require("../controllers/matchController");
-
 
 const JWT_SECRET = "secret123";
 
-// Middleware to verify JWT
+// ✅ Middleware to verify and decode token
 const verifyToken = (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) return res.status(403).json({ error: "No token provided" });
@@ -22,62 +21,33 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-// Register
-router.post("/register", async (req, res) => {
-  const { name, email, password, quizResponses } = req.body;
+// ✅ Auth Routes
+router.post("/register", registerUser);
+router.post("/login", loginUser);
 
-  try {
-    const hashed = await bcrypt.hash(password, 10);
-    const user = new User({ name, email, password: hashed, quizResponses });
-    await user.save();
-    res.status(201).json({ message: "User registered!" });
-  } catch (err) {
-    res.status(500).json({ error: "Registration failed", details: err });
-  }
-});
-
-// Login
-router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-  const user = await User.findOne({ email });
-
-  if (!user) return res.status(401).json({ error: "Invalid email" });
-
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) return res.status(401).json({ error: "Invalid password" });
-
-  const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, { expiresIn: "1d" });
-  res.json({ token, user: { id: user._id, name: user.name, email: user.email } });
-});
-
-// Protected dashboard route
-router.get("/dashboard", verifyToken, (req, res) => {
-  res.json({ message: `Welcome, ${req.user.email}!` });
-});
-
-// Get full profile of another user
-router.get("/user/:id", verifyToken, async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id, "name email quizResponses");
-    if (!user) return res.status(404).json({ error: "User not found" });
-    res.json(user);
-  } catch (err) {
-    console.error("Error fetching user profile", err);
-    res.status(500).json({ error: "Failed to fetch user profile" });
-  }
-});
-
-// Optional: Get logged-in user's own profile
+// ✅ Fixed /me route
 router.get("/me", verifyToken, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id, "name email quizResponses");
-    if (!user) return res.status(404).json({ error: "User not found" });
-    res.json(user);
+    console.log("🔍 Token decoded:", req.user); // You should see this!
+    const user = await User.findById(req.user.id); // 👈 uses decoded id from JWT
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({
+      name: user.name,
+      email: user.email,
+      username: user.username,
+      quizResponses: user.quizResponses,
+    });
   } catch (err) {
+    console.error("❌ Failed to fetch /me:", err);
     res.status(500).json({ error: "Failed to fetch your profile" });
   }
 });
 
+// ✅ Matches
 router.get("/matches", verifyToken, getMatches);
 
 module.exports = router;
