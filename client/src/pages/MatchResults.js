@@ -29,14 +29,17 @@ export default function MatchResults() {
   const startChatWithUser = async (otherUsername) => {
     const client = StreamChat.getInstance("yduz4z95nncj");
     const currentUser = localStorage.getItem("username");
-
-    console.log("🤖 Starting chat between:", currentUser, "and", otherUsername);
-
+  
     if (!currentUser || !otherUsername) {
-      alert("Missing username(s). Chat cannot start.");
+      alert("Missing usernames!");
       return;
     }
-
+  
+    // ✅ Generate a consistent channel ID for both users
+    const sortedMembers = [currentUser, otherUsername].sort();
+    const channelId = sortedMembers.join("-");
+  
+    // Only connect user if not already connected
     if (!client.userID) {
       const res = await fetch("http://localhost:5000/stream/getToken", {
         method: "POST",
@@ -46,15 +49,16 @@ export default function MatchResults() {
       const { token } = await res.json();
       await client.connectUser({ id: currentUser }, token);
     }
-
-    const channel = client.channel("messaging", {
-      members: [currentUser, otherUsername],
+  
+    const channel = client.channel("messaging", channelId, {
+      members: sortedMembers,
     });
-
+  
     await channel.watch();
-    localStorage.setItem("activeChannelId", channel.id);
+    localStorage.setItem("chatChannelId", channelId);
     navigate("/chat");
   };
+  
 
   return (
     <div style={{ padding: "2em" }}>

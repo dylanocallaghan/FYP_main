@@ -1,16 +1,17 @@
+// Chat.js
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../components/AuthContext";
 import {
   Chat,
   Channel,
   ChannelHeader,
-  MessageList,
   MessageInput,
   Thread,
   Window,
-  ChannelList,
+  MessageList,
 } from "stream-chat-react";
 import "stream-chat-react/dist/css/v2/index.css";
+import "../styles/Chat.css";
 
 const ChatPage = () => {
   const { user, streamClient, streamReady } = useAuth();
@@ -18,29 +19,32 @@ const ChatPage = () => {
 
   useEffect(() => {
     const setupChannel = async () => {
-      const channelId = localStorage.getItem("activeChannelId");
-      if (!streamReady || !user?.username || !channelId) return;
+      if (!user || !streamClient || !streamReady) return;
 
-      try {
-        const ch = streamClient.channel("messaging", channelId);
-        await ch.watch();
-        setChannel(ch);
-      } catch (err) {
-        console.error("Channel setup failed:", err);
+      const storedChannelId = localStorage.getItem("chatChannelId");
+      if (storedChannelId) {
+        try {
+          const ch = streamClient.channel("messaging", storedChannelId);
+          await ch.watch();
+          setChannel(ch);
+          console.log("✅ Channel ready:", ch.id);
+        } catch (err) {
+          console.error("❌ Failed to watch channel:", err);
+        }
+      } else {
+        console.log("⚠️ No channel ID found in localStorage.");
       }
     };
 
     setupChannel();
-  }, [streamReady, user]);
+  }, [user, streamClient, streamReady]);
 
-  if (!streamReady || !channel) return <div>Loading chat...</div>;
-
-  const filters = { type: "messaging", members: { $in: [user.username] } };
-  const sort = { last_message_at: -1 };
+  if (!channel) {
+    return <div style={{ padding: "2rem", fontSize: "18px" }}>Loading chat...</div>;
+  }
 
   return (
     <Chat client={streamClient} theme="messaging light">
-      <ChannelList filters={filters} sort={sort} />
       <Channel channel={channel}>
         <Window>
           <ChannelHeader />
