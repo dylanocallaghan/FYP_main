@@ -10,7 +10,8 @@ import UserProfile from "./pages/UserProfile";
 import Chat from "./pages/Chat"; 
 import ProtectedRoute from "./components/ProtectedRoute";
 import Listings from "./pages/Listings"; 
-
+import Inbox from "./pages/Inbox";
+import './styles/App.css';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -39,7 +40,7 @@ function App() {
         setLoggedIn={setLoggedIn}
         handleLogout={handleLogout}
       />
-      <div style={{ padding: "2rem" }}>
+      <div className="app-content">
         <Routes>
           <Route path="/" element={<ProtectedRoute loggedIn={loggedIn}><Profile /></ProtectedRoute>} />
           <Route path="/dashboard" element={<ProtectedRoute loggedIn={loggedIn}><Profile /></ProtectedRoute>} />
@@ -64,6 +65,14 @@ function App() {
             element={
               <ProtectedRoute loggedIn={loggedIn}>
                 <Listings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/inbox"
+            element={
+              <ProtectedRoute loggedIn={loggedIn}>
+                <Inbox />
               </ProtectedRoute>
             }
           />
