@@ -10,9 +10,34 @@ import {
   ChannelHeader,
   Thread,
   Avatar,
+  useChannelStateContext,
 } from "stream-chat-react";
 import "stream-chat-react/dist/css/v2/index.css";
 import "../styles/inbox.css";
+
+const CustomChannelHeader = () => {
+  const { channel } = useChannelStateContext();
+  const members = Object.values(channel.state.members);
+  const otherUser = members.find(
+    (m) => m.user.id !== channel.getClient().userID
+  )?.user;
+
+  return (
+    <div className="custom-header">
+      <Avatar name={otherUser?.name} size={36} />
+      <div className="header-info">
+        <div className="header-name">{otherUser?.name}</div>
+        <div className="header-status">
+          {otherUser?.accountType
+            ? otherUser.accountType === "student"
+              ? "Student"
+              : "Listing Owner"
+            : ""}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const Inbox = () => {
   const { streamClient, user, streamReady } = useAuth();
@@ -43,6 +68,12 @@ const Inbox = () => {
     }));
   };
 
+  const formatTime = (timestamp) => {
+    if (!timestamp) return "";
+    const date = new Date(timestamp);
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  };
+
   return (
     <div className="inbox-wrapper">
       <Chat client={streamClient} theme="messaging light">
@@ -63,6 +94,9 @@ const Inbox = () => {
               Preview={(props) => {
                 const { channel, setActiveChannel, activeChannel } = props;
                 const lastMessage = channel.state.messages?.slice(-1)[0];
+                const lastTimestamp = lastMessage?.created_at;
+                const formattedTime = formatTime(lastTimestamp);
+                const unreadCount = channel.countUnread();
                 const other = Object.values(channel.state.members || {}).find(
                   (m) => m.user?.id !== user?.username
                 );
@@ -78,12 +112,19 @@ const Inbox = () => {
                       <div className="user-line">
                         <Avatar name={other?.user?.name} size={32} />
                         <div className="user-meta">
-                          <strong>{other?.user?.name || "Unknown"}</strong>
+                          <div className="meta-header">
+                            <strong>{other?.user?.name || "Unknown"}</strong>
+                            <span className="message-time">{formattedTime}</span>
+                          </div>
                           <div className="last-message">
                             {lastMessage?.text?.slice(0, 35) || "No messages yet"}
                           </div>
                         </div>
                       </div>
+
+                      {unreadCount > 0 && (
+                        <div className="unread-badge">{unreadCount}</div>
+                      )}
 
                       <div className="dropdown-container" onClick={(e) => e.stopPropagation()}>
                         <button
@@ -117,7 +158,7 @@ const Inbox = () => {
           <div className="inbox-chat-area">
             <Channel>
               <Window>
-                <ChannelHeader />
+                <CustomChannelHeader />
                 <MessageList />
                 <MessageInput />
               </Window>

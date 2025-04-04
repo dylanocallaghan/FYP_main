@@ -10,22 +10,26 @@ const userSchema = new mongoose.Schema({
     unique: true,
     lowercase: true,
     trim: true,
-  },  
+  },
+  accountType: {
+    type: String,
+    enum: ["student", "listing owner"],
+    required: true,
+  },
   quizResponses: {
     cleanliness: Number,
     sleepSchedule: Number,
     sociability: Number,
     guestPolicy: Number,
     personalSpace: Number,
-    financialHabits: Number
+    financialHabits: Number,
   },
   matches: [
     {
       userId: mongoose.Schema.Types.ObjectId,
-      score: Number
-    }
-  ]
+      score: Number,
+    },
+  ],
 });
-
 
 module.exports = mongoose.model("User", userSchema);
