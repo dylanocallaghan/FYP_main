@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const listingSchema = new mongoose.Schema({
   title: { type: String, required: true },
@@ -8,8 +8,9 @@ const listingSchema = new mongoose.Schema({
   features: [String], // e.g., ["WiFi", "Washer", "Heating"]
   availableFrom: { type: Date, default: Date.now },
   landlordEmail: String,
-  landlordId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  createdAt: { type: Date, default: Date.now }
+  landlordId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  createdAt: { type: Date, default: Date.now },
+  images: [String], // Array of image URLs
 });
 
-module.exports = mongoose.model("Listing", listingSchema);
+module.exports = mongoose.model('Listing', listingSchema);

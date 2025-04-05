@@ -1,18 +1,54 @@
 const express = require("express");
-const router = express.Router();
-const { createListing } = require("../controllers/listingController");
+const multer = require("multer");
+const path = require("path");
 const Listing = require("../models/Listing");
+const router = express.Router();
 
-// POST: Create listing
-router.post("/create", createListing);
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, '../uploads')); // Path to the 'uploads' directory
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname); // Unique file name
+  }
+});
 
-// ✅ GET: Get all listings
+
+const upload = multer({ storage: storage });
+
 router.get("/", async (req, res) => {
   try {
-    const listings = await Listing.find().sort({ createdAt: -1 });
-    res.json(listings);
+    const listings = await Listing.find(); // Fetch listings from the database
+    res.status(200).json(listings); // Send the listings as a JSON response
   } catch (err) {
-    res.status(500).json({ error: "Failed to fetch listings" });
+    res.status(500).json({ message: "Failed to fetch listings" });
+  }
+});
+
+
+router.post("/create", upload.array("images", 5), async (req, res) => {
+  try {
+    const { title, location, price, description, features, landlordEmail, availableFrom, availableUntil, propertyType } = req.body;
+    const images = req.files.map(file => file.path);  // Store image paths in DB
+
+    const newListing = new Listing({
+      title,
+      location,
+      price,
+      description,
+      features,
+      landlordEmail,
+      availableFrom,
+      availableUntil,
+      propertyType,
+      images  // Save image paths in the DB
+    });
+
+    await newListing.save();
+    res.status(201).json({ message: "Listing created successfully!" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to create listing." });
   }
 });
 

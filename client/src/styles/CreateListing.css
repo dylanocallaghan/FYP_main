@@ -1,0 +1,62 @@
+.create-listing-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #f7f7f7;
+    border-radius: 8px;
+  }
+  
+  h2 {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Add space between form groups */
+  }
+  
+  .form-group {
+    flex: 1 1 45%; /* Allows each form group to take up 45% of the available width */
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%; /* Ensure form fields take up the full width of their container */
+    padding: 8px;
+    margin-top: 5px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .date-fields {
+    display: flex;
+    gap: 20px; /* Add space between the date inputs */
+  }
+  
+  .date-fields .form-group {
+    flex: 1; /* Make both date inputs the same size */
+  }
+  
+  button.submit-button {
+    padding: 10px 20px;
+    background-color: #5c6bc0;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  button.submit-button:hover {
+    background-color: #3f4f8d;
+  }
+  
+  .error-message {
+    color: red;
+    font-size: 14px;
+  }
+  
