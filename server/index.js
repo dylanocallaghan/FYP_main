@@ -12,6 +12,8 @@ const authRoutes = require("./routes/authRoutes");
 const listingRoutes = require("./routes/listingRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const streamRoutes = require("./routes/streamRoutes");
+const groupRoutes = require('./routes/groupRoutes');
+
 
 // Middleware
 app.use(cors());
@@ -28,6 +30,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/listings", listingRoutes);
 app.use("/api/messages", chatRoutes);
 app.use("/stream", streamRoutes); // ✅ Stream Chat token route
+app.use('/groups', groupRoutes);
+
 
 // Start server
 app.listen(5000, () => {
