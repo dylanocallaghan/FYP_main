@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import "../styles/listings.css";
 
 const Listings = () => {
   const [listings, setListings] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchListings = async () => {
@@ -34,8 +36,11 @@ const Listings = () => {
           {listing.images && Array.isArray(listing.images) && listing.images.map((image, index) => {
             // Check if the image path is relative to your server path and update accordingly
             const imageURL = `http://localhost:5000/uploads/${image.split("\\").pop()}`;
-            return <img key={index} src={imageURL} alt={`listing-image-${index}`} />;
+            return <img key={index} src={imageURL} alt={`listing-image-${index}`} />;          
           })}
+          <button onClick={() => navigate(`/listing/${listing._id}`)}>
+            View & Apply
+          </button>
         </div>
       ))}
     </div>

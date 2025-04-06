@@ -1,10 +1,15 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const applicationSchema = new mongoose.Schema({
   groupId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Group',
-    required: true
+    required: false // for group applications only
+  },
+  applicantId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: false // for solo applications only
   },
   listingId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -16,11 +21,13 @@ const applicationSchema = new mongoose.Schema({
     enum: ['pending', 'accepted', 'rejected'],
     default: 'pending'
   },
-  message: String,
+  message: {
+    type: String
+  },
   createdAt: {
     type: Date,
     default: Date.now
   }
 });
 
-module.exports = mongoose.model('Application', applicationSchema);
+module.exports = mongoose.model("Application", applicationSchema);

@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+
 
 export default function Navbar({ loggedIn, handleLogout }) {
   return (
@@ -9,6 +11,8 @@ export default function Navbar({ loggedIn, handleLogout }) {
       <Link to="/matches">❤️ Matches</Link>
       <Link to="/listings">🏠 Listings</Link>
       <Link to="/create">📦 Create Listing</Link>
+      <NavLink to="/applications">Applications</NavLink>
+
 
       <div style={{ marginLeft: "auto" }}>
         {loggedIn ? (

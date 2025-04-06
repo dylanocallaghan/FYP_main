@@ -25,6 +25,16 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/:id", async (req, res) => {
+  try {
+    const listing = await Listing.findById(req.params.id);
+    if (!listing) return res.status(404).json({ error: "Listing not found" });
+    res.json(listing);
+  } catch (err) {
+    console.error("Error fetching listing:", err);
+    res.status(500).json({ error: "Failed to fetch listing" });
+  }
+});
 
 router.post("/create", upload.array("images", 5), async (req, res) => {
   try {

@@ -11,6 +11,8 @@ import Chat from "./pages/Chat";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Listings from "./pages/Listings"; 
 import Inbox from "./pages/Inbox";
+import ListingDetails from "./pages/ListingDetails";
+import LandlordApplications from "./pages/LandlordApplications";
 import './styles/App.css';
 
 function App() {
@@ -73,6 +75,15 @@ function App() {
             element={
               <ProtectedRoute loggedIn={loggedIn}>
                 <Inbox />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/applications" element={<LandlordApplications />} />
+          <Route
+            path="/listing/:id"
+            element={
+              <ProtectedRoute loggedIn={loggedIn}>
+                <ListingDetails />
               </ProtectedRoute>
             }
           />
