@@ -13,6 +13,7 @@ const listingRoutes = require("./routes/listingRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const streamRoutes = require("./routes/streamRoutes");
 const groupRoutes = require('./routes/groupRoutes');
+const applicationRoutes = require('./routes/applicationRoutes');
 
 
 // Middleware
@@ -31,6 +32,7 @@ app.use("/api/listings", listingRoutes);
 app.use("/api/messages", chatRoutes);
 app.use("/stream", streamRoutes); // ✅ Stream Chat token route
 app.use('/groups', groupRoutes);
+app.use('/applications', applicationRoutes);
 
 
 // Start server
