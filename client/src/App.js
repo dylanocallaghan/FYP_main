@@ -7,9 +7,12 @@ import CreateListing from "./pages/CreateListing";
 import Profile from "./pages/Profile";
 import MatchResults from "./pages/MatchResults";
 import UserProfile from "./pages/UserProfile";
+import CreateGroup from "./pages/CreateGroup";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Listings from "./pages/Listings"; 
 import Inbox from "./pages/Inbox";
+import MyGroup from './pages/MyGroup';
+import PendingInvites from "./pages/PendingInvites";
 import ListingDetails from "./pages/ListingDetails";
 import LandlordApplications from "./pages/LandlordApplications";
 import './styles/App.css';
@@ -48,6 +51,7 @@ function App() {
           <Route path="/matches" element={<ProtectedRoute loggedIn={loggedIn}><MatchResults /></ProtectedRoute>} />
           <Route path="/profile/:id" element={<ProtectedRoute loggedIn={loggedIn}><UserProfile /></ProtectedRoute>} />
           <Route path="/create" element={<ProtectedRoute loggedIn={loggedIn}><CreateListing /></ProtectedRoute>} />
+          <Route path="/my-group" element={<ProtectedRoute loggedIn={loggedIn}><MyGroup /></ProtectedRoute>} />
           <Route path="/profile" element={
             <ProtectedRoute loggedIn={loggedIn}>
               <UserProfile />
@@ -57,6 +61,14 @@ function App() {
           <Route path="/login" element={<Login setLoggedIn={setLoggedIn} />} />
           <Route path="*" element={<Navigate to={loggedIn ? "/" : "/login"} />} />
           <Route path="/user-profile" element={<UserProfile />} />
+          <Route
+            path="/pending-invites"
+            element={
+              <ProtectedRoute loggedIn={loggedIn}>
+                <PendingInvites />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/listings"
             element={
@@ -82,6 +94,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/create-group" element={<CreateGroup />} />
         </Routes>
       </div>
     </BrowserRouter>
