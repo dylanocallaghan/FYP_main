@@ -11,6 +11,7 @@ const ListingDetails = () => {
   const [message, setMessage] = useState("");
   const [user, setUser] = useState(null);
   const [groupId, setGroupId] = useState(null);
+  const [alreadyApplied, setAlreadyApplied] = useState(false);
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -33,6 +34,37 @@ const ListingDetails = () => {
 
     fetchListing();
   }, [id]);
+
+  useEffect(() => {
+    const checkExistingApplication = async () => {
+      const token = localStorage.getItem("token");
+      if (!token || !user) return;
+
+      try {
+        const res = await axios.get(`http://localhost:5000/applications/listing/${id}`, {
+          headers: { "x-access-token": token }
+        });
+
+        const applications = res.data;
+
+        const match = applications.find(app =>
+          (applyAs === "group" && app.groupId?._id === groupId) ||
+          (applyAs === "individual" && app.applicantId === user._id)
+        );
+
+        if (match) {
+          setAlreadyApplied(true);
+        }
+
+      } catch (err) {
+        console.error("Error checking application status:", err);
+      }
+    };
+
+    if (user) {
+      checkExistingApplication();
+    }
+  }, [user, id, groupId, applyAs]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -83,39 +115,47 @@ const ListingDetails = () => {
 
         <hr />
 
-        <form onSubmit={handleSubmit}>
-          {groupId && (
-            <div>
-              <label>
-                <input
-                  type="radio"
-                  value="individual"
-                  checked={applyAs === "individual"}
-                  onChange={(e) => setApplyAs(e.target.value)}
-                /> Apply as Individual
-              </label>
-              <label style={{ marginLeft: "1rem" }}>
-                <input
-                  type="radio"
-                  value="group"
-                  checked={applyAs === "group"}
-                  onChange={(e) => setApplyAs(e.target.value)}
-                /> Apply as Group
-              </label>
-            </div>
-          )}
+        {alreadyApplied ? (
+          <p style={{ color: "green", marginTop: "1rem" }}>
+            ✅ You've already applied to this listing.
+          </p>
+        ) : (
+          <form onSubmit={handleSubmit}>
+            {groupId && (
+              <div>
+                <label>
+                  <input
+                    type="radio"
+                    value="individual"
+                    checked={applyAs === "individual"}
+                    onChange={(e) => setApplyAs(e.target.value)}
+                  /> Apply as Individual
+                </label>
+                <label style={{ marginLeft: "1rem" }}>
+                  <input
+                    type="radio"
+                    value="group"
+                    checked={applyAs === "group"}
+                    onChange={(e) => setApplyAs(e.target.value)}
+                  /> Apply as Group
+                </label>
+              </div>
+            )}
 
-          <textarea
-            placeholder="Write a short message..."
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            rows={4}
-            style={{ width: "100%", marginTop: "1rem" }}
-            required
-          />
+            <textarea
+              placeholder="Write a short message..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              rows={4}
+              style={{ width: "100%", marginTop: "1rem" }}
+              required
+            />
 
-          <button type="submit" className="apply-btn" style={{ marginTop: "1rem" }}>Submit Application</button>
-        </form>
+            <button type="submit" className="apply-btn" style={{ marginTop: "1rem" }}>
+              Submit Application
+            </button>
+          </form>
+        )}
       </div>
     </div>
   );
