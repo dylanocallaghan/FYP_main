@@ -83,7 +83,7 @@ const ListingDetails = () => {
     if (applyAs === "group" && groupId) {
       payload.groupId = groupId;
     } else {
-      payload.applicantId = user?._id;
+      payload.applicantId = user?._id || user?.id;
     }
 
     try {

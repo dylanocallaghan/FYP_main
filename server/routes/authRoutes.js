@@ -47,6 +47,27 @@ router.get("/me", verifyToken, async (req, res) => {
   }
 });
 
+const { StreamChat } = require("stream-chat");
+
+const streamClient = StreamChat.getInstance(
+  process.env.STREAM_API_KEY,
+  process.env.STREAM_API_SECRET
+);
+
+
+// Fetch a user by Mongo ID to get their username (used in chat logic)
+router.get("/user/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select("-password");
+    if (!user) return res.status(404).json({ error: "User not found" });
+    res.json(user);
+  } catch (err) {
+    console.error("Error fetching user by ID:", err.message);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+
 // ✅ Matches
 router.get("/matches", verifyToken, getMatches);
 

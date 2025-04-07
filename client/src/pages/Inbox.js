@@ -7,7 +7,6 @@ import {
   Window,
   MessageList,
   MessageInput,
-  ChannelHeader,
   Thread,
   Avatar,
   useChannelStateContext,
@@ -16,8 +15,8 @@ import "stream-chat-react/dist/css/v2/index.css";
 import "../styles/inbox.css";
 
 const CustomChannelHeader = () => {
-  const { channel } = useChannelStateContext();
-  const members = Object.values(channel.state.members);
+  const { channel } = useChannelStateContext(); // ✅ FIXED: get the channel from context
+  const members = Object.values(channel.state.members || {});
   const otherUser = members.find(
     (m) => m.user.id !== channel.getClient().userID
   )?.user;

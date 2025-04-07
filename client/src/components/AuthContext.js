@@ -30,27 +30,25 @@ export const AuthProvider = ({ children }) => {
   }, [user]);
 
   const connectToStream = async (u) => {
-    if (!u?.username || streamClient.userID) return;
+    if (!u?.username || streamClient.userID === u.username) return;
 
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/stream/getToken`, {
+      const res = await fetch("http://localhost:5000/stream/getToken", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: u.username }),
       });
 
       const data = await res.json();
-      if (!data.token) return console.error("❌ No token returned", data);
+      if (!data.token) return;
 
       await streamClient.connectUser(
         { id: u.username, name: u.name || u.username },
         data.token
       );
-      console.log("✅ Connected to Stream");
+
       setStreamReady(true);
-    } catch (err) {
-      console.error("Stream connection failed:", err);
-    }
+    } catch (err) {}
   };
 
   const disconnectFromStream = async () => {

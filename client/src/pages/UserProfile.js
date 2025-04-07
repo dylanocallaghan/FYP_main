@@ -26,7 +26,7 @@ export default function UserProfile() {
       </ul>
 
       <button
-        onClick={() => navigate("/matches")}
+        onClick={() => navigate(-1)}
         style={{
           marginTop: "1rem",
           padding: "0.5rem 1rem",
@@ -36,7 +36,7 @@ export default function UserProfile() {
           cursor: "pointer",
         }}
       >
-        🔙 Back to Matches
+        🔙 Go Back
       </button>
     </div>
   );

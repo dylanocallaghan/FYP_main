@@ -8,22 +8,18 @@ const streamServerClient = StreamChat.getInstance(
   process.env.STREAM_API_SECRET
 );
 
-// POST /stream/getToken
-router.post('/getToken', async (req, res) => {
+router.post("/getToken", (req, res) => {
   const { id } = req.body;
-
-  if (!id) {
-    return res.status(400).json({ error: 'User ID is required' });
-  }
+  if (!id) return res.status(400).json({ error: "Missing user ID" });
 
   try {
-    const token = streamServerClient.createToken(id);
+    const token = streamServerClient.createToken(id); // ✅ Fixed here
     res.json({ token });
   } catch (err) {
-    console.error("❌ Error generating token:", err);
-    res.status(500).json({ error: 'Failed to generate token' });
+    res.status(500).json({ error: "Failed to create Stream token" });
   }
 });
+
 
 // DELETE /stream/delete-channel/:channelId
 router.delete('/delete-channel/:channelId', async (req, res) => {

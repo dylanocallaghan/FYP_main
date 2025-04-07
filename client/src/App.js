@@ -7,7 +7,6 @@ import CreateListing from "./pages/CreateListing";
 import Profile from "./pages/Profile";
 import MatchResults from "./pages/MatchResults";
 import UserProfile from "./pages/UserProfile";
-import Chat from "./pages/Chat"; 
 import ProtectedRoute from "./components/ProtectedRoute";
 import Listings from "./pages/Listings"; 
 import Inbox from "./pages/Inbox";
@@ -17,7 +16,7 @@ import './styles/App.css';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
-  const [user, setUser] = useState(null); // ✅ Track logged-in user
+  const [user, setUser] = useState(null); //  Track logged-in user
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -56,12 +55,8 @@ function App() {
           } />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login setLoggedIn={setLoggedIn} />} />
-          <Route path="/chat" element={
-            <ProtectedRoute loggedIn={loggedIn}>
-              <Chat loggedInUser={user} /> {/* ✅ Fixed */}
-            </ProtectedRoute>
-          } />
           <Route path="*" element={<Navigate to={loggedIn ? "/" : "/login"} />} />
+          <Route path="/user-profile" element={<UserProfile />} />
           <Route
             path="/listings"
             element={
