@@ -23,6 +23,10 @@ export default function Navbar({ loggedIn, handleLogout }) {
       <Link to="/my-group" className="nav-link">
         👥 Groups
       </Link>
+      <NavLink to="/pending-invites" className="nav-link">
+        Invites
+      </NavLink>
+
 
       <div style={{ marginLeft: "auto" }}>
         {loggedIn ? (

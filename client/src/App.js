@@ -61,6 +61,7 @@ function App() {
           <Route path="/login" element={<Login setLoggedIn={setLoggedIn} />} />
           <Route path="*" element={<Navigate to={loggedIn ? "/" : "/login"} />} />
           <Route path="/user-profile" element={<UserProfile />} />
+          <Route path="/pending-invites" element={<PendingInvites />} />
           <Route
             path="/pending-invites"
             element={
