@@ -15,6 +15,7 @@ import MyGroup from './pages/MyGroup';
 import PendingInvites from "./pages/PendingInvites";
 import ListingDetails from "./pages/ListingDetails";
 import LandlordApplications from "./pages/LandlordApplications";
+import AdminDashboard from "./pages/AdminDashboard";
 import './styles/App.css';
 
 function App() {
@@ -62,6 +63,7 @@ function App() {
           <Route path="*" element={<Navigate to={loggedIn ? "/" : "/login"} />} />
           <Route path="/user-profile" element={<UserProfile />} />
           <Route path="/pending-invites" element={<PendingInvites />} />
+          <Route path="/admin" element={<AdminDashboard />} />
           <Route
             path="/pending-invites"
             element={

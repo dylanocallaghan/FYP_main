@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const Group = require('../models/Group');
 const User = require('../models/User');
-const verifyToken = require('../middleware/authMiddleware');
+const { verifyToken } = require("../middleware/authMiddleware");
 
 // Create group (user becomes creator and first member)
 router.post('/', verifyToken, async (req, res) => {

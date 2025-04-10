@@ -14,6 +14,7 @@ const chatRoutes = require("./routes/chatRoutes");
 const streamRoutes = require("./routes/streamRoutes");
 const groupRoutes = require('./routes/groupRoutes');
 const applicationRoutes = require('./routes/applicationRoutes');
+const adminRoutes = require("./routes/adminRoutes");
 
 
 // Middleware
@@ -30,9 +31,11 @@ mongoose.connect("mongodb://localhost:27017/student_housing")
 app.use("/api/auth", authRoutes);
 app.use("/api/listings", listingRoutes);
 app.use("/api/messages", chatRoutes);
-app.use("/stream", streamRoutes); // ✅ Stream Chat token route
+app.use("/messages", chatRoutes); 
+app.use("/stream", streamRoutes); 
 app.use('/groups', groupRoutes);
 app.use('/applications', applicationRoutes);
+app.use("/admin", adminRoutes);
 
 
 // Start server

@@ -16,4 +16,11 @@ function verifyToken(req, res, next) {
   }
 }
 
-module.exports = verifyToken;
+function isAdmin(req, res, next) {
+  if (req.user?.accountType !== 'admin') {
+    return res.status(403).json({ error: 'Admin access only' });
+  }
+  next();
+}
+
+module.exports = { verifyToken, isAdmin };

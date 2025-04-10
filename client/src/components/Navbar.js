@@ -26,6 +26,9 @@ export default function Navbar({ loggedIn, handleLogout }) {
       <NavLink to="/pending-invites" className="nav-link">
         Invites
       </NavLink>
+      {user?.accountType === "admin" && (
+        <Link to="/admin">Admin</Link>
+      )}
 
 
       <div style={{ marginLeft: "auto" }}>
