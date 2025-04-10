@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../components/AuthContext";
+import "../styles/PendingInvites.css"; // ✅ Link the CSS file
 
 const PendingInvites = () => {
   const { user } = useAuth();
@@ -32,64 +33,62 @@ const PendingInvites = () => {
         headers: { "x-access-token": token },
       });
       alert("✅ Invite accepted!");
-      fetchGroup(); // Refresh UI
+      fetchGroup();
     } catch (err) {
-      console.error("Error accepting invite:", err.response?.data || err.message);
       alert("❌ Error accepting invite.");
+      console.error(err);
     }
   };
-  
+
   const handleDecline = async () => {
     try {
       await axios.patch(`http://localhost:5000/groups/${group._id}/decline`, {}, {
         headers: { "x-access-token": token },
       });
       alert("❌ Invite declined.");
-      fetchGroup(); // Refresh UI
+      fetchGroup();
     } catch (err) {
-      console.error("Error declining invite:", err.response?.data || err.message);
       alert("❌ Error declining invite.");
+      console.error(err);
     }
   };
 
-
-  if (loading) return <div className="group-page">Loading invites...</div>;
-  if (!group) return <div className="group-page">You are not part of any group.</div>;
+  if (loading) return <div className="pending-invites-container">Loading invites...</div>;
+  if (!group) return <div className="pending-invites-container">You are not part of any group.</div>;
 
   const isPending = group.pendingInvites.some((inv) => inv._id === user.id);
 
   return (
-    <div className="group-page">
-      <h2>Your Group</h2>
-      <p><strong>Creator:</strong> {group.creator?.username}</p>
+    <div className="pending-invites-container">
+      <h2 className="pending-invites-title">⏳ Pending Invites</h2>
 
-      <h3>Members:</h3>
-      <ul>
-        {group.members.map((member) => (
-          <li key={member._id}>{member.username}</li>
+      <h3>✅ Members</h3>
+      <ul className="pending-invites-list">
+        {group.members.map((m) => (
+          <li key={m._id} className="pending-invites-item">
+            {m.username}
+          </li>
         ))}
       </ul>
 
-      <h3>Pending Invites:</h3>
+      <h3 style={{ marginTop: "2rem" }}>📨 Invited:</h3>
       {group.pendingInvites.length === 0 ? (
         <p>No pending invites.</p>
       ) : (
-        <ul>
-          {group.pendingInvites.map((invite) => (
-            <li key={invite._id}>{invite.username}</li>
+        <ul className="pending-invites-list">
+          {group.pendingInvites.map((p) => (
+            <li key={p._id} className="pending-invites-item">
+              {p.username}
+            </li>
           ))}
         </ul>
       )}
 
       {isPending && (
-        <div className="invite-actions" style={{ marginTop: "1rem" }}>
-          <p style={{ color: "orange" }}>You have a pending invite to this group.</p>
-          <button onClick={handleAccept} style={{ marginRight: "1rem", padding: "0.5rem", cursor: "pointer" }}>
-            ✅ Accept
-          </button>
-          <button onClick={handleDecline} style={{ padding: "0.5rem", cursor: "pointer" }}>
-            ❌ Decline
-          </button>
+        <div className="pending-invites-actions" style={{ marginTop: "2rem" }}>
+          <p style={{ marginBottom: "1rem" }}>You have a pending invite to this group:</p>
+          <button className="accept" onClick={handleAccept}>✔ Accept</button>
+          <button className="decline" onClick={handleDecline}>✖ Decline</button>
         </div>
       )}
     </div>

@@ -33,33 +33,51 @@ router.patch('/:id/invite', verifyToken, async (req, res) => {
     const group = await Group.findById(groupId);
     if (!group) return res.status(404).json({ message: 'Group not found' });
 
-    // Only group creator can send invites
     if (group.creator.toString() !== userId) {
       return res.status(403).json({ message: 'Only the group creator can send invites' });
     }
 
-    // Fetch user docs for provided usernames
     const users = await User.find({ username: { $in: usernames } });
-    const foundUsernames = users.map(u => u.username);
-    const invitesSent = [];
+    const foundUsernames = users.map((u) => u.username);
+
+    const notFound = usernames.filter(u => !foundUsernames.includes(u));
+    const invited = [];
+    const alreadyInvited = [];
+    const alreadyMembers = [];
 
     for (const user of users) {
-      if (!user || !user._id) continue;
+      const id = user._id.toString();
+      const isAlreadyInvited = group.pendingInvites.some(i => i.toString() === id);
+      const isAlreadyMember = group.members.some(m => m.toString() === id);
 
-      const alreadyInvited = group.pendingInvites.some(id => id.toString() === user._id.toString());
-      const alreadyMember = group.members.some(id => id.toString() === user._id.toString());
+      if (isAlreadyMember) {
+        alreadyMembers.push(user.username);
+        continue;
+      }
 
-      if (!alreadyInvited && !alreadyMember) {
+      if (isAlreadyInvited) {
+        alreadyInvited.push(user.username);
+        continue;
+      }
+
+      if (id !== userId) {
         group.pendingInvites.push(user._id);
-        invitesSent.push(user.username);
+        invited.push(user.username);
       }
     }
 
     await group.save();
-    res.status(200).json({ message: 'Invites sent', invitesSent });
+
+    res.status(200).json({
+      message: 'Processed invites',
+      invited,
+      alreadyInvited,
+      alreadyMembers,
+      notFound,
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error while inviting users' });
+    console.error('Error sending invites:', error);
+    res.status(500).json({ message: 'Server error during invite' });
   }
 });
 

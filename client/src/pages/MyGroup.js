@@ -63,19 +63,44 @@ const MyGroup = () => {
     const usernames = inviteUsernames.split(",").map((u) => u.trim());
   
     try {
-      await axios.patch(
+      const res = await axios.patch(
         `http://localhost:5000/groups/${group._id}/invite`,
         { usernames },
         { headers: { "x-access-token": token } }
       );
-      alert("Invites sent!");
+  
+      const {
+        invited,
+        notFound,
+        alreadyInvited,
+        alreadyMembers,
+      } = res.data;
+  
+      if (invited.length > 0) {
+        alert(`✅ Invites sent to: ${invited.join(", ")}`);
+      }
+  
+      if (alreadyInvited.length > 0) {
+        alert(`ℹ️ Already invited: ${alreadyInvited.join(", ")}`);
+      }
+  
+      if (alreadyMembers.length > 0) {
+        alert(`👥 Already in group: ${alreadyMembers.join(", ")}`);
+      }
+  
+      if (notFound.length > 0) {
+        alert(`⚠️ Not found: ${notFound.join(", ")}`);
+      }
+  
       setInviteUsernames("");
-      fetchGroup(); // Refresh group data
+      fetchGroup(); // Refresh data
     } catch (err) {
-      alert("Error sending invites.");
+      alert("❌ Error sending invites.");
       console.error(err);
     }
   };
+  
+  
   
 
   if (loading) return <div className="group-page">Loading group...</div>;
