@@ -15,22 +15,29 @@ import "stream-chat-react/dist/css/v2/index.css";
 import "../styles/inbox.css";
 
 const CustomChannelHeader = () => {
-  const { channel } = useChannelStateContext(); // ✅ FIXED: get the channel from context
+  const { channel } = useChannelStateContext();
   const members = Object.values(channel.state.members || {});
-  const otherUser = members.find(
-    (m) => m.user.id !== channel.getClient().userID
-  )?.user;
+  const currentUserID = channel.getClient().userID;
+
+  const isGroupChat = members.length > 2;
+  const otherUsers = members
+    .map((m) => m.user)
+    .filter((u) => u.id !== currentUserID);
+
+  const title = isGroupChat
+    ? `Group Chat: ${otherUsers.map((u) => u.name).join(", ")}`
+    : otherUsers[0]?.name || "Chat";
 
   return (
     <div className="custom-header">
-      <Avatar name={otherUser?.name} size={36} />
+      <Avatar name={title} size={36} />
       <div className="header-info">
-        <div className="header-name">{otherUser?.name}</div>
+        <div className="header-name"><strong>{title}</strong></div>
         <div className="header-status">
-          {otherUser?.accountType
-            ? otherUser.accountType === "student"
-              ? "Student"
-              : "Listing Owner"
+          {otherUsers[0]?.accountType === "student"
+            ? "Student"
+            : otherUsers[0]?.accountType === "listingOwner"
+            ? "Listing Owner"
             : ""}
         </div>
       </div>
@@ -38,13 +45,17 @@ const CustomChannelHeader = () => {
   );
 };
 
+
 const Inbox = () => {
   const { streamClient, user, streamReady } = useAuth();
   const [channels, setChannels] = useState([]);
   const [pinned, setPinned] = useState({});
   const [openDropdownId, setOpenDropdownId] = useState(null);
 
-  const filters = { type: "messaging", members: { $in: [user?.username] } };
+  const filters = {
+    type: "messaging",
+    members: { $in: [user?.username] },
+  };
   const sort = { last_message_at: -1 };
 
   if (!streamClient || !streamReady) {
@@ -96,9 +107,16 @@ const Inbox = () => {
                 const lastTimestamp = lastMessage?.created_at;
                 const formattedTime = formatTime(lastTimestamp);
                 const unreadCount = channel.countUnread();
-                const other = Object.values(channel.state.members || {}).find(
-                  (m) => m.user?.id !== user?.username
-                );
+                const members = Object.values(channel.state.members || {});
+                const isGroupChat = members.length > 2;
+
+                const displayName = isGroupChat
+                  ? `👥 Group Chat: ${members
+                      .map((m) => m.user.name)
+                      .filter((name) => name !== user.name)
+                      .join(", ")}`
+                  : members.find((m) => m.user.id !== user.username)?.user?.name ||
+                    "Unknown";
 
                 return (
                   <div
@@ -109,10 +127,10 @@ const Inbox = () => {
                   >
                     <div className="inbox-user-info">
                       <div className="user-line">
-                        <Avatar name={other?.user?.name} size={32} />
+                        <Avatar name={displayName} size={32} />
                         <div className="user-meta">
                           <div className="meta-header">
-                            <strong>{other?.user?.name || "Unknown"}</strong>
+                            <strong>{displayName}</strong>
                             <span className="message-time">{formattedTime}</span>
                           </div>
                           <div className="last-message">

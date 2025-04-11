@@ -18,7 +18,7 @@ const MyGroup = () => {
       setGroup(res.data);
     } catch (err) {
       if (err.response && err.response.status === 404) {
-        setGroup(null); // Expected: not in a group
+        setGroup(null);
       } else {
         console.error("Error fetching group:", err);
       }
@@ -59,52 +59,42 @@ const MyGroup = () => {
 
   const handleSendInvites = async () => {
     if (!inviteUsernames || !group?._id) return;
-  
+
     const usernames = inviteUsernames.split(",").map((u) => u.trim());
-  
+
     try {
       const res = await axios.patch(
         `http://localhost:5000/groups/${group._id}/invite`,
         { usernames },
         { headers: { "x-access-token": token } }
       );
-  
-      const {
-        invited,
-        notFound,
-        alreadyInvited,
-        alreadyMembers,
-      } = res.data;
-  
-      if (invited.length > 0) {
-        alert(`✅ Invites sent to: ${invited.join(", ")}`);
-      }
-  
-      if (alreadyInvited.length > 0) {
-        alert(`ℹ️ Already invited: ${alreadyInvited.join(", ")}`);
-      }
-  
-      if (alreadyMembers.length > 0) {
-        alert(`👥 Already in group: ${alreadyMembers.join(", ")}`);
-      }
-  
-      if (notFound.length > 0) {
-        alert(`⚠️ Not found: ${notFound.join(", ")}`);
-      }
-  
+
+      const { invited, notFound, alreadyInvited, alreadyMembers } = res.data;
+
+      if (invited.length > 0) alert(`✅ Invites sent to: ${invited.join(", ")}`);
+      if (alreadyInvited.length > 0) alert(`ℹ️ Already invited: ${alreadyInvited.join(", ")}`);
+      if (alreadyMembers.length > 0) alert(`👥 Already in group: ${alreadyMembers.join(", ")}`);
+      if (notFound.length > 0) alert(`⚠️ Not found: ${notFound.join(", ")}`);
+
       setInviteUsernames("");
-      fetchGroup(); // Refresh data
+      fetchGroup();
     } catch (err) {
       alert("❌ Error sending invites.");
-      console.error(err);
     }
   };
-  
-  
-  
+
+  const handleCreateGroupChat = async () => {
+    try {
+      await axios.post(`http://localhost:5000/groups/${group._id}/chat`, {}, {
+        headers: { "x-access-token": token },
+      });
+      alert("💬 Group chat created! You’ll see it in your Inbox.");
+    } catch (err) {
+      alert("❌ Failed to create group chat.");
+    }
+  };
 
   if (loading) return <div className="group-page">Loading group...</div>;
-
   if (!group) return <div className="group-page">You are not in a group.</div>;
 
   const isCreator = group.creator._id === user.id;
@@ -159,10 +149,25 @@ const MyGroup = () => {
               padding: "0.5rem 1rem",
               border: "none",
               borderRadius: "5px",
+              marginRight: "1rem",
               cursor: "pointer",
             }}
           >
             ✉ Invite Users
+          </button>
+
+          <button
+            onClick={handleCreateGroupChat}
+            style={{
+              backgroundColor: "#3f51b5",
+              color: "white",
+              padding: "0.5rem 1rem",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+            }}
+          >
+            💬 Create Group Chat
           </button>
 
           {showInviteForm && (
