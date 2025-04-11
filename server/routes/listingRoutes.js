@@ -38,12 +38,13 @@ router.get("/:id", async (req, res) => {
 
 router.post("/create", upload.array("images", 5), async (req, res) => {
   try {
-    const { title, location, price, description, features, landlordEmail, availableFrom, availableUntil, propertyType } = req.body;
+    const { title, location, address, price, description, features, landlordEmail, availableFrom, availableUntil, propertyType } = req.body;
     const images = req.files.map(file => file.path);  // Store image paths in DB
 
     const newListing = new Listing({
       title,
       location,
+      address,
       price,
       description,
       features,
@@ -51,8 +52,9 @@ router.post("/create", upload.array("images", 5), async (req, res) => {
       availableFrom,
       availableUntil,
       propertyType,
-      images  // Save image paths in the DB
+      images
     });
+    
 
     await newListing.save();
     res.status(201).json({ message: "Listing created successfully!" });

@@ -105,6 +105,28 @@ const ListingDetails = () => {
       <div className="listing-card">
         <h2>{listing.title}</h2>
         <p><strong>Location:</strong> {listing.location}</p>
+        <p><strong>Address:</strong> {listing.address}</p>
+
+        {/* Google Map iframe embed */}
+        {listing.address ? (
+          <>
+            <p><strong>Map Preview:</strong></p>
+            <div style={{ marginTop: "1rem", marginBottom: "1rem" }}>
+              <iframe
+                title="map"
+                width="100%"
+                height="400"
+                style={{ border: 0 }}
+                loading="lazy"
+                allowFullScreen
+                src={`https://www.google.com/maps?q=${encodeURIComponent(listing.address)}&output=embed`}
+              />
+            </div>
+          </>
+        ) : (
+          <p style={{ color: "gray" }}>No address provided for this listing.</p>
+        )}
+
         <p><strong>Price:</strong> {listing.price}</p>
         <p><strong>Description:</strong> {listing.description}</p>
         <p><strong>Features:</strong> {listing.features?.join(", ")}</p>
