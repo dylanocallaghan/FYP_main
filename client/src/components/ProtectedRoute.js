@@ -1,9 +1,11 @@
 import { Navigate, useLocation } from "react-router-dom";
+import { useAuth } from "./AuthContext"; // adjust path if needed
 
-export default function ProtectedRoute({ children, loggedIn }) {
+export default function ProtectedRoute({ children }) {
   const location = useLocation();
+  const { user } = useAuth(); // ✅ get user from context
 
-  if (!loggedIn) {
+  if (!user) {
     return (
       <Navigate
         to="/login"

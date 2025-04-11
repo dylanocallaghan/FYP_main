@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
@@ -19,84 +18,28 @@ import AdminDashboard from "./pages/AdminDashboard";
 import './styles/App.css';
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [user, setUser] = useState(null); //  Track logged-in user
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const storedUser = localStorage.getItem("user");
-    setLoggedIn(!!token);
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setLoggedIn(false);
-    setUser(null);
-  };
-
   return (
     <BrowserRouter>
-      <Navbar
-        loggedIn={loggedIn}
-        setLoggedIn={setLoggedIn}
-        handleLogout={handleLogout}
-      />
+      <Navbar />
       <div className="app-content">
         <Routes>
-          <Route path="/" element={<ProtectedRoute loggedIn={loggedIn}><Profile /></ProtectedRoute>} />
-          <Route path="/dashboard" element={<ProtectedRoute loggedIn={loggedIn}><Profile /></ProtectedRoute>} />
-          <Route path="/matches" element={<ProtectedRoute loggedIn={loggedIn}><MatchResults /></ProtectedRoute>} />
-          <Route path="/profile/:id" element={<ProtectedRoute loggedIn={loggedIn}><UserProfile /></ProtectedRoute>} />
-          <Route path="/create" element={<ProtectedRoute loggedIn={loggedIn}><CreateListing /></ProtectedRoute>} />
-          <Route path="/my-group" element={<ProtectedRoute loggedIn={loggedIn}><MyGroup /></ProtectedRoute>} />
-          <Route path="/profile" element={
-            <ProtectedRoute loggedIn={loggedIn}>
-              <UserProfile />
-            </ProtectedRoute>
-          } />
+          <Route path="/" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/dashboard" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/matches" element={<ProtectedRoute><MatchResults /></ProtectedRoute>} />
+          <Route path="/profile/:id" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+          <Route path="/create" element={<ProtectedRoute><CreateListing /></ProtectedRoute>} />
+          <Route path="/my-group" element={<ProtectedRoute><MyGroup /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
           <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login setLoggedIn={setLoggedIn} />} />
-          <Route path="*" element={<Navigate to={loggedIn ? "/" : "/login"} />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="*" element={<Navigate to="/" />} />
           <Route path="/user-profile" element={<UserProfile />} />
-          <Route path="/pending-invites" element={<PendingInvites />} />
+          <Route path="/pending-invites" element={<ProtectedRoute><PendingInvites /></ProtectedRoute>} />
           <Route path="/admin" element={<AdminDashboard />} />
-          <Route
-            path="/pending-invites"
-            element={
-              <ProtectedRoute loggedIn={loggedIn}>
-                <PendingInvites />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/listings"
-            element={
-              <ProtectedRoute loggedIn={loggedIn}>
-                <Listings />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/inbox"
-            element={
-              <ProtectedRoute loggedIn={loggedIn}>
-                <Inbox />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/listings" element={<ProtectedRoute><Listings /></ProtectedRoute>} />
+          <Route path="/inbox" element={<ProtectedRoute><Inbox /></ProtectedRoute>} />
           <Route path="/applications" element={<LandlordApplications />} />
-          <Route
-            path="/listing/:id"
-            element={
-              <ProtectedRoute loggedIn={loggedIn}>
-                <ListingDetails />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/listing/:id" element={<ProtectedRoute><ListingDetails /></ProtectedRoute>} />
           <Route path="/create-group" element={<CreateGroup />} />
         </Routes>
       </div>

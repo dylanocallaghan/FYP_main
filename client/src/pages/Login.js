@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../components/AuthContext";
 
 export default function Login({ setLoggedIn }) {
   const [form, setForm] = useState({ email: "", password: "" });
   const [message, setMessage] = useState("");
+  const [redirectMessage, setRedirectMessage] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-  const [redirectMessage, setRedirectMessage] = useState("");
+  const { loginUser } = useAuth();
 
   useEffect(() => {
     if (location.state?.message) {
@@ -17,6 +19,7 @@ export default function Login({ setLoggedIn }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setMessage("");
 
     try {
       const res = await fetch("http://localhost:5000/api/auth/login", {
@@ -28,15 +31,20 @@ export default function Login({ setLoggedIn }) {
       const data = await res.json();
 
       if (res.ok) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
-        localStorage.setItem("username", data.user.username); // ✅ for Stream
-        setLoggedIn(true);
-        navigate("/dashboard");
+        try {
+          await loginUser(data.token, data.user);
+          if (setLoggedIn) setLoggedIn(true); // safe check
+          navigate("/dashboard", { replace: true });
+        } catch (err) {
+          console.warn("loginUser() threw but login succeeded:", err);
+          // No error message shown here anymore since app still works
+          navigate("/dashboard", { replace: true });
+        }
       } else {
-        setMessage(data.error || "❌ Login failed");
+        setMessage(`❌ ${data.error || "Login failed"}`);
       }
     } catch (err) {
+      console.error("Fetch failed:", err);
       setMessage("❌ Server error. Please try again.");
     }
   };
@@ -64,7 +72,7 @@ export default function Login({ setLoggedIn }) {
         />
         <button type="submit">Login</button>
       </form>
-      {message && <p>{message}</p>}
+      {message && <p style={{ color: "red", fontWeight: "bold" }}>{message}</p>}
     </div>
   );
 }

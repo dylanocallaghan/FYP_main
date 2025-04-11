@@ -3,7 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 
 export default function Navbar({ loggedIn, handleLogout }) {
-  const { user } = useAuth();
+  const { user, logoutUser } = useAuth();
 
   return (
     <nav
@@ -32,8 +32,8 @@ export default function Navbar({ loggedIn, handleLogout }) {
 
 
       <div style={{ marginLeft: "auto" }}>
-        {loggedIn ? (
-          <button onClick={handleLogout}>Logout</button>
+        {user ? (
+          <button onClick={logoutUser}>Logout</button>
         ) : (
           <>
             <Link to="/login">Login</Link> | <Link to="/register">Register</Link>

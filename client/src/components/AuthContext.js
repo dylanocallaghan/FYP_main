@@ -1,4 +1,3 @@
-// src/components/AuthContext.js
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { StreamChat } from "stream-chat";
 
@@ -12,7 +11,9 @@ export const AuthProvider = ({ children }) => {
   // On initial load, restore session
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
-    if (storedUser) {
+    const token = localStorage.getItem("token");
+
+    if (storedUser && token) {
       const parsedUser = JSON.parse(storedUser);
       setUser(parsedUser);
       connectToStream(parsedUser);
@@ -28,6 +29,7 @@ export const AuthProvider = ({ children }) => {
     } else {
       localStorage.removeItem("user");
       localStorage.removeItem("username");
+      localStorage.removeItem("token");
       disconnectFromStream();
     }
   }, [user]);
@@ -67,8 +69,31 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const loginUser = async (token, userData) => {
+    try {
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("username", userData.username);
+      setUser(userData);
+    } catch (error) {
+      console.error("Error inside loginUser:", error);
+      throw error;
+    }
+  };
+  
+  
+
+  const logoutUser = async () => {
+    await disconnectFromStream();
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("username");
+    setUser(null);
+    window.location.href = "/login"; // ✅ Redirect to login cleanly
+  };
+
   return (
-    <AuthContext.Provider value={{ user, setUser, streamClient, streamReady }}>
+    <AuthContext.Provider value={{ user, setUser, streamClient, streamReady, loginUser, logoutUser }}>
       {children}
     </AuthContext.Provider>
   );
