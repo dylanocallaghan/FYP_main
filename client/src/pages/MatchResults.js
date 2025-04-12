@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { StreamChat } from "stream-chat";
+import "../styles/MatchResults.css";
 
 export default function MatchResults() {
   const [matches, setMatches] = useState([]);
@@ -10,11 +11,9 @@ export default function MatchResults() {
     const fetchMatches = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch("http://localhost:5000/api/auth/matches", {
+        const response = await fetch("http://localhost:5000/api/auth/match/compatible-users", {
           headers: { Authorization: `Bearer ${token}` },
         });
-
-        if (!response.ok) throw new Error("Failed to fetch matches");
 
         const data = await response.json();
         setMatches(data);
@@ -29,17 +28,11 @@ export default function MatchResults() {
   const startChatWithUser = async (otherUsername) => {
     const client = StreamChat.getInstance("yduz4z95nncj");
     const currentUser = localStorage.getItem("username");
-  
-    if (!currentUser || !otherUsername) {
-      alert("Missing usernames!");
-      return;
-    }
-  
-    // ✅ Generate a consistent channel ID for both users
+    if (!currentUser || !otherUsername) return;
+
     const sortedMembers = [currentUser, otherUsername].sort();
     const channelId = sortedMembers.join("-");
-  
-    // Only connect user if not already connected
+
     if (!client.userID) {
       const res = await fetch("http://localhost:5000/stream/getToken", {
         method: "POST",
@@ -49,34 +42,51 @@ export default function MatchResults() {
       const { token } = await res.json();
       await client.connectUser({ id: currentUser }, token);
     }
-  
+
     const channel = client.channel("messaging", channelId, {
       members: sortedMembers,
     });
-  
+
     await channel.watch();
     localStorage.setItem("chatChannelId", channelId);
     navigate("/chat");
   };
-  
+
+  const getScoreColor = (score) => {
+    if (score >= 70) return "green";
+    if (score >= 50) return "orange";
+    return "red";
+  };
 
   return (
-    <div style={{ padding: "2em" }}>
-      <h2>Top Matches</h2>
-      <ul>
-        {matches
-          .filter((m) => m.username) // ✅ skip undefined usernames
-          .map((m) => (
-            <li key={m.id}>
-              <strong>{m.name}</strong> ({m.username}) – Match Score: {m.score}%
-              &nbsp;
-              <Link to={`/profile/${m.id}`} state={{ profile: m }}>
+    <div className="match-results-container">
+      <h2>Top 5 Matches</h2>
+      <p className="match-subtitle">
+        Based on your quiz answers and priority rankings. Higher % = more compatible living habits.
+      </p>
+
+      <ul className="match-list">
+        {matches.slice(0, 5).map((m) => (
+          <li key={m.userId} className="match-item">
+            <div>
+              <strong>{m.name}</strong> ({m.username}) –{" "}
+              <span
+                className="match-score"
+                style={{ color: getScoreColor(m.score) }}
+              >
+                {m.score}% compatible
+              </span>
+              <br />
+              <Link to={`/profile/${m.userId}`} state={{ profile: m }}>
                 View Profile
-              </Link>
-              &nbsp; | &nbsp;
-              <button onClick={() => startChatWithUser(m.username)}>Chat</button>
-            </li>
-          ))}
+              </Link>{" "}
+              |{" "}
+              <button onClick={() => startChatWithUser(m.username)}>
+                Chat
+              </button>
+            </div>
+          </li>
+        ))}
       </ul>
     </div>
   );

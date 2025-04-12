@@ -59,4 +59,7 @@ router.get("/user/:id", async (req, res) => {
 // ✅ Matches
 router.get("/matches", verifyToken, getMatches);
 
+const { getCompatibleUsers } = require("../controllers/authController");
+router.get("/match/compatible-users", verifyToken, getCompatibleUsers);
+
 module.exports = router;

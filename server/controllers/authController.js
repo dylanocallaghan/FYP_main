@@ -131,4 +131,53 @@ exports.updateQuiz = async (req, res) => {
   }
 };
 
+exports.getCompatibleUsers = async (req, res) => {
+  try {
+    const currentUser = await User.findById(req.user.id);
+    if (!currentUser || !currentUser.quizResponses || !currentUser.priorityOrder) {
+      return res.status(400).json({ message: "Incomplete quiz data." });
+    }
+
+    const allUsers = await User.find({ _id: { $ne: req.user.id }, accountType: "student" });
+
+    const totalQuestions = currentUser.priorityOrder.length;
+    const weights = {};
+    currentUser.priorityOrder.forEach((key, index) => {
+      weights[key] = totalQuestions - index;
+    });
+
+    const results = allUsers.map((user) => {
+      let totalWeightedDiff = 0;
+      let totalWeight = 0;
+
+      currentUser.priorityOrder.forEach((key) => {
+        const userAnswer = user.quizResponses?.[key];
+        const myAnswer = currentUser.quizResponses?.[key];
+        if (userAnswer != null && myAnswer != null) {
+          const diff = Math.abs(userAnswer - myAnswer);
+          const weight = weights[key];
+          totalWeightedDiff += diff * weight;
+          totalWeight += 4 * weight;
+        }
+      });
+
+      const score = totalWeight > 0
+        ? Math.round(100 - (totalWeightedDiff / totalWeight) * 100)
+        : 0;
+
+      return {
+        userId: user._id,
+        name: user.name,
+        username: user.username,
+        score,
+      };
+    });
+
+    results.sort((a, b) => b.score - a.score);
+    res.json(results);
+  } catch (err) {
+    console.error("Error calculating compatibility:", err);
+    res.status(500).json({ message: "Server error." });
+  }
+};
 
