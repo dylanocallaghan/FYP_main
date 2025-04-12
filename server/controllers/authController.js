@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const { StreamChat } = require("stream-chat");
 
+
 const JWT_SECRET = "secret123";
 
 // 🔑 Stream credentials from .env
@@ -11,40 +12,61 @@ const apiSecret = process.env.STREAM_API_SECRET;
 const streamClient = StreamChat.getInstance(apiKey, apiSecret);
 
 exports.registerUser = async (req, res) => {
-  const { name, email, username, password, quizResponses, accountType } = req.body;
+  const {
+    name,
+    email,
+    username,
+    password,
+    quizResponses,
+    accountType,
+    gender,
+    pronouns,
+    age,
+    course,
+    year,
+    smoking,
+    drinking,
+    pets,
+    openTo,
+    bio
+  } = req.body;
 
   try {
-    // Check if user already exists (including soft deleted users)
     const existingUser = await User.findOne({ username });
 
     if (existingUser && existingUser.isDeleted) {
-      // Reactivate soft-deleted user
       existingUser.isDeleted = false;
       existingUser.password = await bcrypt.hash(password, 10);
       await existingUser.save();
     } else if (existingUser) {
-      // If user exists and is not deleted, return an error
       return res.status(400).json({ error: "User already exists" });
     } else {
-      // Create a new user
-      const hashed = await bcrypt.hash(password, 10);
       const user = new User({
         name,
         email,
         username,
-        password: hashed,
-        accountType, // Save type
+        password,
+        accountType,
         quizResponses,
+        gender,
+        pronouns,
+        age,
+        course,
+        year,
+        smoking,
+        drinking,
+        pets,
+        openTo,
+        bio
       });
 
       await user.save();
     }
 
-    // Create or update the user in Stream Chat too
     await streamClient.upsertUser({
       id: username,
-      name: name,
-      accountType: accountType, // Send accountType to Stream
+      name,
+      accountType,
     });
 
     res.status(201).json({ message: "User registered!" });
@@ -53,7 +75,6 @@ exports.registerUser = async (req, res) => {
     res.status(500).json({ error: "Registration failed", details: err });
   }
 };
-
 
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
@@ -82,3 +103,32 @@ exports.loginUser = async (req, res) => {
     },
   });
 };
+
+exports.updateQuiz = async (req, res) => {
+  try {
+    console.log("🔥 Incoming quiz data:", req.body);
+    console.log("🔐 Decoded user ID:", req.user.id);
+
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        quizResponses: req.body.quizResponses,
+        priorityOrder: req.body.priorityOrder,
+      },
+      { new: true }
+    ).select("-password");
+
+    if (!user) {
+      console.warn("⚠️ User not found in DB");
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    console.log("✅ Quiz updated for user:", user.username);
+    res.json(user);
+  } catch (err) {
+    console.error("❌ Failed to update quiz:", err);
+    res.status(500).json({ error: "Failed to update quiz." });
+  }
+};
+
+

@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const { registerUser, loginUser } = require("../controllers/authController");
 const { getMatches } = require("../controllers/matchController");
+const { updateQuiz } = require("../controllers/authController");
 
 const JWT_SECRET = "secret123";
 
@@ -25,27 +26,14 @@ const verifyToken = (req, res, next) => {
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 
-// ✅ Fixed /me route
+// Fixed /me route — returns full user object
 router.get("/me", verifyToken, async (req, res) => {
-  try {
-    console.log("🔍 Token decoded:", req.user); // You should see this!
-    const user = await User.findById(req.user.id); // 👈 uses decoded id from JWT
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    res.json({
-      name: user.name,
-      email: user.email,
-      username: user.username,
-      quizResponses: user.quizResponses,
-    });
-  } catch (err) {
-    console.error("❌ Failed to fetch /me:", err);
-    res.status(500).json({ error: "Failed to fetch your profile" });
-  }
+  const user = await User.findById(req.user.id).select("-password");
+  if (!user) return res.status(404).json({ error: "User not found" });
+  res.json(user);
 });
+
+router.patch("/update-quiz", verifyToken, updateQuiz);
 
 const { StreamChat } = require("stream-chat");
 

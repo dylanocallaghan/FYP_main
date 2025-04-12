@@ -4,7 +4,9 @@ require('dotenv').config();
 const SECRET_KEY = process.env.JWT_SECRET;
 
 function verifyToken(req, res, next) {
-  const token = req.header('x-access-token');
+  const bearer = req.header("Authorization");
+  const token = bearer?.startsWith("Bearer ") ? bearer.split(" ")[1] : req.header("x-access-token");
+
   if (!token) return res.status(401).json({ error: 'Access denied' });
 
   try {
@@ -15,6 +17,7 @@ function verifyToken(req, res, next) {
     res.status(400).json({ error: 'Invalid token' });
   }
 }
+
 
 function isAdmin(req, res, next) {
   if (req.user?.accountType !== 'admin') {

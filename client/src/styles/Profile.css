@@ -1,0 +1,98 @@
+.profile-container {
+    padding: 2rem;
+    max-width: 800px;
+    margin: auto;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 0 12px rgba(0, 123, 255, 0.1);
+    color: #000;
+  }
+  
+  .profile-header {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #007bff;
+  }
+  
+  .profile-section {
+    margin-bottom: 1rem;
+  }
+  
+  .profile-label {
+    font-weight: bold;
+    color: #000;
+  }
+  
+  .profile-value {
+    margin-left: 0.5rem;
+    color: #333;
+  }
+  
+  .quiz-section {
+    margin-top: 2rem;
+  }
+  
+  .quiz-title {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: #007bff;
+  }
+  
+  .quiz-list {
+    padding-left: 1.2rem;
+    color: #444;
+  }
+  
+  .quiz-item {
+    margin-bottom: 0.3rem;
+  }
+  
+  .quiz-card {
+    background-color: #e6f0ff;
+    padding: 1rem;
+    margin-top: 1.5rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  .quiz-card strong {
+    color: #222;
+  }
+  
+  .quiz-card button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    margin-top: 0.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .quiz-card button:hover {
+    background-color: #0056b3;
+  }
+  
+  @media (max-width: 600px) {
+    .profile-container {
+      padding: 1rem;
+    }
+  
+    .quiz-card {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .quiz-card button {
+      width: 100%;
+    }
+  }
+  

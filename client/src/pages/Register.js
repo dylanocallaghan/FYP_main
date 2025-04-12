@@ -1,90 +1,134 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Register() {
-  const [form, setForm] = useState({
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
     name: "",
-    email: "",
     username: "",
+    email: "",
     password: "",
-    accountType: "student", // default
-    quizResponses: {
-      cleanliness: 3,
-      sleepSchedule: 3,
-      sociability: 3,
-      guestPolicy: 3,
-      personalSpace: 3,
-      financialHabits: 3,
+    accountType: "student",
+    gender: "",
+    pronouns: "",
+    age: "",
+    course: "",
+    year: "",
+    smoking: "",
+    drinking: "",
+    pets: "",
+    openTo: {
+      smokers: false,
+      petOwners: false,
+      mixedGender: false,
+      internationalStudents: false,
     },
+    bio: "",
   });
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+
+    if (name.startsWith("openTo.")) {
+      const field = name.split(".")[1];
+      setFormData((prev) => ({
+        ...prev,
+        openTo: { ...prev.openTo, [field]: checked },
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: type === "checkbox" ? checked : value,
+      }));
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    const res = await fetch("http://localhost:5000/api/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form), // Ensure it sends all the data
-    });
-  
-    const data = await res.json();
-    alert(data.message || "Registration successful!");
-  };
-  
-
-  const updateQuiz = (field, value) => {
-    setForm({
-      ...form,
-      quizResponses: { ...form.quizResponses, [field]: parseInt(value) },
-    });
+    try {
+      await axios.post("http://localhost:5000/api/auth/register", formData);
+      navigate("/login");
+    } catch (err) {
+      console.error(err);
+      alert("Registration failed");
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <div className="form-container">
       <h2>Register</h2>
-      <input
-        placeholder="Name"
-        onChange={(e) => setForm({ ...form, name: e.target.value })}
-      />
-      <input
-        placeholder="Username"
-        onChange={(e) => setForm({ ...form, username: e.target.value })}
-      />
-      <input
-        placeholder="Email"
-        onChange={(e) => setForm({ ...form, email: e.target.value })}
-      />
-      <input
-        placeholder="Password"
-        type="password"
-        onChange={(e) => setForm({ ...form, password: e.target.value })}
-      />
+      <form onSubmit={handleSubmit}>
+        <input name="name" placeholder="Name" onChange={handleChange} required />
+        <input name="username" placeholder="Username" onChange={handleChange} required />
+        <input name="email" type="email" placeholder="Email" onChange={handleChange} required />
+        <input name="password" type="password" placeholder="Password" onChange={handleChange} required />
 
-      <label>
-        Account Type:
-        <select
-          value={form.accountType}
-          onChange={(e) => setForm({ ...form, accountType: e.target.value })}
-        >
+        <select name="accountType" onChange={handleChange} required>
           <option value="student">Student</option>
           <option value="listing owner">Listing Owner</option>
         </select>
-      </label>
 
-      <h3>Roommate Preferences (1-5)</h3>
-      {Object.keys(form.quizResponses).map((key) => (
-        <div key={key}>
-          <label>{key}</label>
-          <input
-            type="number"
-            min="1"
-            max="5"
-            value={form.quizResponses[key]}
-            onChange={(e) => updateQuiz(key, e.target.value)}
-          />
-        </div>
-      ))}
+        <select name="gender" onChange={handleChange}>
+          <option value="">Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Non-binary">Non-binary</option>
+          <option value="Prefer not to say">Prefer not to say</option>
+        </select>
 
-      <button type="submit">Register</button>
-    </form>
+        <input name="pronouns" placeholder="Pronouns (e.g. she/her)" onChange={handleChange} />
+        <input name="age" type="number" placeholder="Age" onChange={handleChange} />
+        <input name="course" placeholder="Course" onChange={handleChange} />
+
+        <select name="year" onChange={handleChange}>
+          <option value="">Select Year</option>
+          <option value="1st Year">1st Year</option>
+          <option value="2nd Year">2nd Year</option>
+          <option value="3rd Year">3rd Year</option>
+          <option value="Final Year">Final Year</option>
+          <option value="Postgraduate">Postgraduate</option>
+        </select>
+
+        <select name="smoking" onChange={handleChange}>
+          <option value="">Smoker?</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <select name="drinking" onChange={handleChange}>
+          <option value="">Drinks Alcohol?</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <select name="pets" onChange={handleChange}>
+          <option value="">Has Pets?</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <label>
+          <input type="checkbox" name="openTo.smokers" onChange={handleChange} /> Open to living with smokers
+        </label>
+        <label>
+          <input type="checkbox" name="openTo.petOwners" onChange={handleChange} /> Open to living with pet owners
+        </label>
+        <label>
+          <input type="checkbox" name="openTo.mixedGender" onChange={handleChange} /> Open to mixed-gender households
+        </label>
+        <label>
+          <input type="checkbox" name="openTo.internationalStudents" onChange={handleChange} /> Open to international students
+        </label>
+
+        <textarea
+          name="bio"
+          placeholder="Short bio about yourself..."
+          onChange={handleChange}
+        />
+
+        <button type="submit">Register</button>
+      </form>
+    </div>
   );
 }

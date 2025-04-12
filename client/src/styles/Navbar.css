@@ -1,70 +1,68 @@
-/* Navbar.css */
-
 .navbar {
-    background-color: #fff;
-    padding: 1rem;
-    border-bottom: 1px solid #ddd;
+  background-color: #ffffff;
+  padding: 1rem;
+  border-bottom: 2px solid #007bff;
+  display: flex;
+  flex-direction: column;
+  color: #000;
+}
+
+.burger {
+  display: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.nav-links {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-left a,
+.nav-right a,
+.logout-btn {
+  margin: 0 0.5rem;
+  text-decoration: none;
+  color: #000; /* black text */
+  font-weight: 500;
+}
+
+.logout-btn {
+  background: none;
+  border: none;
+  color: #d9534f;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .burger {
+    display: block;
+    align-self: flex-start;
+    margin-bottom: 0.5rem;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .nav-links.open {
+    display: flex;
+  }
+
+  .nav-left,
+  .nav-right {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
   }
-  
-  .burger {
-    display: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-  }
-  
-  .nav-links {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
+
   .nav-left a,
   .nav-right a,
   .logout-btn {
-    margin: 0 0.5rem;
-    text-decoration: none;
-    color: #333;
-    font-weight: 500;
+    margin: 0.25rem 0;
   }
-  
-  .logout-btn {
-    background: none;
-    border: none;
-    color: red;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  
-  @media (max-width: 768px) {
-    .burger {
-      display: block;
-      align-self: flex-start;
-      margin-bottom: 0.5rem;
-    }
-  
-    .nav-links {
-      display: none;
-      flex-direction: column;
-      width: 100%;
-    }
-  
-    .nav-links.open {
-      display: flex;
-    }
-  
-    .nav-left,
-    .nav-right {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-    }
-  
-    .nav-left a,
-    .nav-right a,
-    .logout-btn {
-      margin: 0.25rem 0;
-    }
-  }
-  
+}
