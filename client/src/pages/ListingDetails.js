@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import "../styles/listings.css";
+import "../styles/ListingDetails.css";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { Carousel } from "react-responsive-carousel";
 
 const ListingDetails = () => {
   const { id } = useParams();
@@ -27,9 +29,7 @@ const ListingDetails = () => {
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
       setUser(parsedUser);
-      if (parsedUser.groupId) {
-        setGroupId(parsedUser.groupId);
-      }
+      setGroupId(parsedUser.groupId || null);
     }
 
     fetchListing();
@@ -46,7 +46,6 @@ const ListingDetails = () => {
         });
 
         const applications = res.data;
-
         const match = applications.find(app =>
           (applyAs === "group" && app.groupId?._id === groupId) ||
           (applyAs === "individual" && app.applicantId === user._id)
@@ -101,21 +100,20 @@ const ListingDetails = () => {
   if (!listing) return <p>Loading...</p>;
 
   return (
-    <div className="listings-container">
-      <div className="listing-card">
+    <div className="listing-details-container">
+      <div className="listing-details-card">
         <h2>{listing.title}</h2>
         <p><strong>Location:</strong> {listing.location}</p>
         <p><strong>Address:</strong> {listing.address}</p>
 
-        {/* Google Map iframe embed */}
-        {listing.address ? (
+        {listing.address && (
           <>
             <p><strong>Map Preview:</strong></p>
-            <div style={{ marginTop: "1rem", marginBottom: "1rem" }}>
+            <div style={{ margin: "1rem 0", borderRadius: "8px", overflow: "hidden" }}>
               <iframe
                 title="map"
                 width="100%"
-                height="400"
+                height="350"
                 style={{ border: 0 }}
                 loading="lazy"
                 allowFullScreen
@@ -123,17 +121,62 @@ const ListingDetails = () => {
               />
             </div>
           </>
-        ) : (
-          <p style={{ color: "gray" }}>No address provided for this listing.</p>
         )}
 
-        <p><strong>Price:</strong> {listing.price}</p>
+        <p><strong>Price:</strong> €{listing.price}</p>
         <p><strong>Description:</strong> {listing.description}</p>
         <p><strong>Features:</strong> {listing.features?.join(", ")}</p>
+        <p><strong>Available From:</strong> {listing.availableFrom?.slice(0, 10)}</p>
+        <p><strong>Available Until:</strong> {listing.availableUntil?.slice(0, 10)}</p>
+        <p><strong>Lease Length:</strong> {listing.leaseLength} months</p>
+        <p><strong>Property Type:</strong> {listing.propertyType}</p>
+        <p><strong>Room Type:</strong> {listing.roomType}</p>
+        <p><strong>Furnishing:</strong> {listing.furnishing}</p>
 
-        {listing.images?.map((img, i) => (
-          <img key={i} src={`http://localhost:5000/uploads/${img.split("\\").pop()}`} alt={`img-${i}`} />
-        ))}
+        <p><strong>Bills Included:</strong></p>
+        <ul>
+          <li>Internet: {listing.billsIncluded?.internet ? "Yes" : "No"}</li>
+          <li>Electricity: {listing.billsIncluded?.electricity ? "Yes" : "No"}</li>
+          <li>Water: {listing.billsIncluded?.water ? "Yes" : "No"}</li>
+        </ul>
+
+        <p><strong>Rules:</strong></p>
+        <ul>
+          <li>Pets: {listing.rules?.noPets ? "Yes" : "No"}</li>
+          <li>Smoking: {listing.rules?.noSmoking ? "Yes" : "No"}</li>
+        </ul>
+
+        {listing.landlordNote && (
+          <p><strong>Landlord Note:</strong> {listing.landlordNote}</p>
+        )}
+
+        <p><strong>Landlord Email:</strong> {listing.landlordEmail}</p>
+
+        {listing.images?.length > 0 && (
+          <Carousel
+            showThumbs={false}
+            showStatus={false}
+            infiniteLoop
+            useKeyboardArrows
+            autoPlay
+            interval={5000}
+            className="listing-carousel"
+          >
+            {listing.images.map((img, i) => {
+              const imageURL = `http://localhost:5000/uploads/${img.split("\\").pop()}`;
+              return (
+                <div key={i}>
+                  <img
+                    src={imageURL}
+                    alt={`listing-${i}`}
+                    className="carousel-image"
+                    onError={(e) => (e.target.src = "/default.jpg")}
+                  />
+                </div>
+              );
+            })}
+          </Carousel>
+        )}
 
         <hr />
 
@@ -144,7 +187,7 @@ const ListingDetails = () => {
         ) : (
           <form onSubmit={handleSubmit}>
             {groupId && (
-              <div>
+              <div style={{ margin: "1rem 0" }}>
                 <label>
                   <input
                     type="radio"
@@ -153,7 +196,7 @@ const ListingDetails = () => {
                     onChange={(e) => setApplyAs(e.target.value)}
                   /> Apply as Individual
                 </label>
-                <label style={{ marginLeft: "1rem" }}>
+                <label style={{ marginLeft: "1.5rem" }}>
                   <input
                     type="radio"
                     value="group"
@@ -169,13 +212,10 @@ const ListingDetails = () => {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={4}
-              style={{ width: "100%", marginTop: "1rem" }}
               required
             />
 
-            <button type="submit" className="apply-btn" style={{ marginTop: "1rem" }}>
-              Submit Application
-            </button>
+            <button type="submit" className="apply-btn">Submit Application</button>
           </form>
         )}
       </div>

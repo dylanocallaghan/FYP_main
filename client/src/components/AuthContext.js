@@ -72,16 +72,21 @@ export const AuthProvider = ({ children }) => {
   const loginUser = async (token, userData) => {
     try {
       localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(userData));
       localStorage.setItem("username", userData.username);
-      setUser(userData);
+
+      // ✅ Ensure groupId is stored if present
+      const userWithGroup = {
+        ...userData,
+        groupId: userData.groupId || null,
+      };
+      localStorage.setItem("user", JSON.stringify(userWithGroup));
+
+      setUser(userWithGroup);
     } catch (error) {
       console.error("Error inside loginUser:", error);
       throw error;
     }
   };
-  
-  
 
   const logoutUser = async () => {
     await disconnectFromStream();

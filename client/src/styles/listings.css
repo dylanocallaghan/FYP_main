@@ -1,3 +1,4 @@
+/* Page container */
 .listings-container {
   padding: 2rem;
   max-width: 1200px;
@@ -11,7 +12,31 @@
   margin-bottom: 2rem;
 }
 
-/* Responsive Grid for Listing Cards */
+/* Filter & Sort UI */
+.filter-sort-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.filter-sort-bar input,
+.filter-sort-bar select {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.filter-sort-bar label {
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* Listings grid */
 .listing-grid {
   display: flex;
   flex-wrap: wrap;
@@ -19,7 +44,7 @@
   justify-content: center;
 }
 
-/* Card Styles */
+/* Individual listing card */
 .listing-card {
   background-color: #f9f9f9;
   border: 1px solid #ddd;
@@ -41,13 +66,6 @@
   color: #444;
 }
 
-.listing-card img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 6px;
-  margin: 0.75rem 0;
-}
-
 .listing-card button {
   background-color: #007bff;
   color: white;
@@ -63,9 +81,35 @@
   background-color: #0056b3;
 }
 
-/* MOBILE RESPONSIVENESS */
+/* Carousel styling */
+.listing-carousel {
+  margin: 1rem 0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.listing-carousel .carousel .slide img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  object-fit: cover;
+  max-height: 200px;
+}
+
+/* Mobile responsive styles */
 @media (max-width: 768px) {
   .listing-card {
     width: 100%;
+  }
+
+  .filter-sort-bar {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .filter-sort-bar input,
+  .filter-sort-bar select {
+    width: 90%;
+    max-width: 300px;
   }
 }

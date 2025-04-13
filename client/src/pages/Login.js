@@ -32,7 +32,29 @@ export default function Login({ setLoggedIn }) {
       const data = await res.json();
 
       if (res.ok) {
-        await loginUser(data.token, data.user);
+        let userWithGroup = { ...data.user };
+
+        // ✅ Fetch group using token-based /groups/mygroup route
+        try {
+          const groupRes = await fetch("http://localhost:5000/groups/mygroup", {
+            headers: {
+              "x-access-token": data.token,
+              "Content-Type": "application/json"
+            }
+          });
+
+          if (groupRes.ok) {
+            const groupData = await groupRes.json();
+            if (groupData && groupData._id) {
+              userWithGroup.groupId = groupData._id;
+            }
+          }
+        } catch (groupErr) {
+          console.warn("No group found or failed to fetch group info.");
+        }
+
+        await loginUser(data.token, userWithGroup);
+
         if (setLoggedIn) setLoggedIn(true);
         navigate("/dashboard", { replace: true });
       } else {

@@ -16,6 +16,14 @@ const MyGroup = () => {
         headers: { "x-access-token": token },
       });
       setGroup(res.data);
+
+      // ✅ Update localStorage with groupId
+      const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+      localStorage.setItem("user", JSON.stringify({
+        ...storedUser,
+        groupId: res.data._id
+      }));
+
     } catch (err) {
       if (err.response && err.response.status === 404) {
         setGroup(null);
