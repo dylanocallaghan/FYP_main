@@ -2,6 +2,7 @@ const express = require("express");
 const multer = require("multer");
 const path = require("path");
 const Listing = require("../models/Listing");
+const { createListing } = require("../controllers/listingController"); // ✅ import controller
 const router = express.Router();
 
 const storage = multer.diskStorage({
@@ -12,7 +13,6 @@ const storage = multer.diskStorage({
     cb(null, Date.now() + '-' + file.originalname); // Unique file name
   }
 });
-
 
 const upload = multer({ storage: storage });
 
@@ -36,32 +36,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post("/create", upload.array("images", 5), async (req, res) => {
-  try {
-    const { title, location, address, price, description, features, landlordEmail, availableFrom, availableUntil, propertyType } = req.body;
-    const images = req.files.map(file => file.path);  // Store image paths in DB
-
-    const newListing = new Listing({
-      title,
-      location,
-      address,
-      price,
-      description,
-      features,
-      landlordEmail,
-      availableFrom,
-      availableUntil,
-      propertyType,
-      images
-    });
-    
-
-    await newListing.save();
-    res.status(201).json({ message: "Listing created successfully!" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to create listing." });
-  }
-});
+// ✅ Replaced this route with your working controller logic
+router.post("/create", upload.array("images", 10), createListing);
 
 module.exports = router;

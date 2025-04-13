@@ -49,7 +49,7 @@ export default function MatchResults() {
 
     await channel.watch();
     localStorage.setItem("chatChannelId", channelId);
-    navigate("/chat");
+    navigate("/inbox");
   };
 
   const getScoreColor = (score) => {
@@ -70,20 +70,27 @@ export default function MatchResults() {
           <li key={m.userId} className="match-item">
             <div>
               <strong>{m.name}</strong> ({m.username}) –{" "}
-              <span
-                className="match-score"
-                style={{ color: getScoreColor(m.score) }}
-              >
+              <span className="match-score" style={{ color: getScoreColor(m.score) }}>
                 {m.score}% compatible
               </span>
-              <br />
-              <Link to={`/profile/${m.userId}`} state={{ profile: m }}>
-                View Profile
-              </Link>{" "}
-              |{" "}
-              <button onClick={() => startChatWithUser(m.username)}>
-                Chat
-              </button>
+              <div className="match-actions" style={{ marginTop: "5px" }}>
+                <Link
+                  to={`/profile/${m.userId}`}
+                  state={{ profile: m }}
+                  className="view-profile-link"
+                >
+                  View Profile
+                </Link>
+                <button
+                  className="chat-button"
+                  onClick={(e) => {
+                    e.stopPropagation(); // stop click bubbling
+                    startChatWithUser(m.username);
+                  }}
+                >
+                  Chat
+                </button>
+              </div>
             </div>
           </li>
         ))}

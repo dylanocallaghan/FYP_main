@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../components/AuthContext";
+import "../styles/MyGroup.css";
 
 const MyGroup = () => {
   const { user } = useAuth();
@@ -17,15 +18,13 @@ const MyGroup = () => {
       });
       setGroup(res.data);
 
-      // ✅ Update localStorage with groupId
       const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
       localStorage.setItem("user", JSON.stringify({
         ...storedUser,
         groupId: res.data._id
       }));
-
     } catch (err) {
-      if (err.response && err.response.status === 404) {
+      if (err.response?.status === 404) {
         setGroup(null);
       } else {
         console.error("Error fetching group:", err);
@@ -67,7 +66,6 @@ const MyGroup = () => {
 
   const handleSendInvites = async () => {
     if (!inviteUsernames || !group?._id) return;
-
     const usernames = inviteUsernames.split(",").map((u) => u.trim());
 
     try {
@@ -78,7 +76,6 @@ const MyGroup = () => {
       );
 
       const { invited, notFound, alreadyInvited, alreadyMembers } = res.data;
-
       if (invited.length > 0) alert(`✅ Invites sent to: ${invited.join(", ")}`);
       if (alreadyInvited.length > 0) alert(`ℹ️ Already invited: ${alreadyInvited.join(", ")}`);
       if (alreadyMembers.length > 0) alert(`👥 Already in group: ${alreadyMembers.join(", ")}`);
@@ -97,6 +94,7 @@ const MyGroup = () => {
         headers: { "x-access-token": token },
       });
       alert("💬 Group chat created! You’ll see it in your Inbox.");
+      fetchGroup();
     } catch (err) {
       alert("❌ Failed to create group chat.");
     }
@@ -109,116 +107,53 @@ const MyGroup = () => {
 
   return (
     <div className="group-page">
-      <h2>👥 Your Group</h2>
-      <p>
-        <strong>Creator:</strong> {group.creator.username}
-      </p>
+      <div className="group-header">
+        <h2>👥 Your Group</h2>
+        <div className="group-meta">
+          <p><span className="meta-label">Group Name:</span> {group.name}</p>
+          <p><span className="meta-label">Creator:</span> {group.creator.username}</p>
+        </div>
+      </div>
 
       <h3>✅ Members</h3>
-      <ul>
-        {group.members.map((m) => (
-          <li key={m._id}>{m.username || m._id}</li>
-        ))}
-      </ul>
+      <ul>{group.members.map((m) => (
+        <li key={m._id}>{m.username || m._id}</li>
+      ))}</ul>
 
       {group.pendingInvites.length > 0 && (
         <>
           <h3>⏳ Pending Invites</h3>
-          <ul>
-            {group.pendingInvites.map((p) => (
-              <li key={p._id}>{p.username || p._id}</li>
-            ))}
-          </ul>
+          <ul>{group.pendingInvites.map((p) => (
+            <li key={p._id}>{p.username || p._id}</li>
+          ))}</ul>
         </>
       )}
 
       {isCreator ? (
-        <div style={{ marginTop: "2rem" }}>
-          <button
-            onClick={handleDelete}
-            style={{
-              backgroundColor: "#f44336",
-              color: "white",
-              padding: "0.5rem 1rem",
-              border: "none",
-              borderRadius: "5px",
-              marginRight: "1rem",
-              cursor: "pointer",
-            }}
-          >
-            🗑 Delete Group
-          </button>
-
-          <button
-            onClick={() => setShowInviteForm((prev) => !prev)}
-            style={{
-              backgroundColor: "#4CAF50",
-              color: "white",
-              padding: "0.5rem 1rem",
-              border: "none",
-              borderRadius: "5px",
-              marginRight: "1rem",
-              cursor: "pointer",
-            }}
-          >
-            ✉ Invite Users
-          </button>
-
-          <button
-            onClick={handleCreateGroupChat}
-            style={{
-              backgroundColor: "#3f51b5",
-              color: "white",
-              padding: "0.5rem 1rem",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
-          >
-            💬 Create Group Chat
-          </button>
+        <div>
+          <button onClick={handleDelete} className="delete">🗑 Delete Group</button>
+          <button onClick={() => setShowInviteForm((prev) => !prev)} className="invite">✉ Invite Users</button>
+          <button onClick={handleCreateGroupChat} className="chat">💬 Create Group Chat</button>
 
           {showInviteForm && (
-            <div style={{ marginTop: "1rem" }}>
+            <div className="invite-form">
               <input
                 type="text"
                 value={inviteUsernames}
                 onChange={(e) => setInviteUsernames(e.target.value)}
                 placeholder="Enter usernames, comma-separated"
-                style={{ padding: "0.5rem", width: "300px" }}
               />
-              <button
-                onClick={handleSendInvites}
-                style={{
-                  marginLeft: "1rem",
-                  padding: "0.5rem 1rem",
-                  backgroundColor: "#2196F3",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "5px",
-                  cursor: "pointer",
-                }}
-              >
-                Send Invites
-              </button>
+              <button onClick={handleSendInvites} className="invite">Send Invites</button>
             </div>
           )}
         </div>
       ) : (
-        <button
-          onClick={handleLeave}
-          style={{
-            marginTop: "2rem",
-            backgroundColor: "#fdd835",
-            color: "#000",
-            padding: "0.5rem 1rem",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          ❌ Leave Group
-        </button>
+        <div>
+          <button onClick={handleLeave} className="leave">❌ Leave Group</button>
+          {group.chatCreated && (
+            <button onClick={() => window.location.href = "/inbox"} className="chat">📨 Group Chat</button>
+          )}
+        </div>
       )}
     </div>
   );

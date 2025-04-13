@@ -10,26 +10,37 @@ const streamClient = StreamChat.getInstance(
   process.env.STREAM_API_SECRET
 );
 
-// Create group
+// Create group with optional invites
 router.post('/', verifyToken, async (req, res) => {
   try {
     const creatorId = req.user.id;
+    const { memberIds = [] } = req.body;
 
     const newGroup = new Group({
+      name: req.body.name,
       creator: creatorId,
       members: [creatorId],
-      pendingInvites: [],
+      pendingInvites: memberIds,
     });
 
     await newGroup.save();
 
-    // Create Stream chat channel
     const user = await User.findById(creatorId);
-    const channel = streamClient.channel("messaging", newGroup._id.toString(), {
+    const invitedUsers = await User.find({ _id: { $in: memberIds } });
+    const allUsernames = [user.username, ...invitedUsers.map(u => u.username)];
+
+    const channel = streamClient.channel("messaging", `group-${newGroup._id}`, {
       name: `Group ${newGroup._id}`,
-      members: [user.username],
+      members: allUsernames,
     });
-    await channel.create();
+
+    try {
+      await channel.create({
+        created_by: { id: user.username },
+      });
+    } catch (err) {
+      console.warn("^ Failed to create Stream channel.", err);
+    }
 
     res.status(201).json(newGroup);
   } catch (error) {
@@ -37,6 +48,7 @@ router.post('/', verifyToken, async (req, res) => {
     res.status(500).json({ message: 'Error creating group', error });
   }
 });
+
 
 // Group chat creation logic
 router.post("/:id/chat", verifyToken, async (req, res) => {
@@ -52,12 +64,12 @@ router.post("/:id/chat", verifyToken, async (req, res) => {
     const creatorUser = await User.findById(req.user.id);
 
     const channel = streamClient.channel("messaging", group._id.toString(), {
-      name: `Group Chat: ${memberUsernames.join(", ")}`, // Friendly name
+      name: `Group Chat: ${memberUsernames.join(", ")}`,
       members: memberUsernames,
       created_by_id: creatorUser.username,
     });
 
-    await channel.create();
+    await channel.create({ created_by: { id: creatorUser.username } }); // 🔧 FIXED
 
     res.status(200).json({ message: "Group chat created" });
   } catch (error) {
@@ -65,6 +77,7 @@ router.post("/:id/chat", verifyToken, async (req, res) => {
     res.status(500).json({ message: "Failed to create group chat" });
   }
 });
+
 
 
 // Invite users to group
@@ -200,10 +213,16 @@ router.delete('/:id', verifyToken, async (req, res) => {
       return res.status(403).json({ message: 'Only the group creator can delete the group' });
     }
 
-    await group.deleteOne();
-
+    const user = await User.findById(req.user.id); // ⬅ needed for Stream delete context
     const channel = streamClient.channel("messaging", group._id.toString());
-    await channel.delete();
+
+    try {
+      await channel.delete({ created_by: { id: user.id } }); // ⬅ important fix
+    } catch (err) {
+      console.warn("⚠️ Failed to delete Stream channel. It may not exist:", err.message);
+    }
+
+    await group.deleteOne();
 
     res.status(200).json({ message: 'Group deleted successfully' });
   } catch (error) {
@@ -211,6 +230,7 @@ router.delete('/:id', verifyToken, async (req, res) => {
     res.status(500).json({ message: 'Error deleting group', error });
   }
 });
+
 
 // Get current user's group
 router.get('/mygroup', verifyToken, async (req, res) => {

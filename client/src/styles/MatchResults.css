@@ -1,104 +1,99 @@
 .match-results-container {
-    max-width: 800px;
-    margin: auto;
-    padding: 2rem;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 0 8px rgba(0, 123, 255, 0.1);
-    font-family: Arial, sans-serif;
-    color: #000;
-  }
-  
-  h2 {
-    text-align: center;
-    color: #007bff;
-    margin-bottom: 1.5rem;
+  max-width: 900px;
+  margin: auto;
+  padding: 2rem;
+  background: #f9fbff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.05);
+  font-family: "Segoe UI", sans-serif;
+}
+
+h2 {
+  text-align: center;
+  color: #0366d6;
+  margin-bottom: 0.75rem;
+  font-size: 1.75rem;
+}
+
+.match-subtitle {
+  text-align: center;
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 2rem;
+}
+
+.match-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.match-item {
+  background: white;
+  border: 1px solid #e2ecf8;
+  border-radius: 10px;
+  padding: 1.25rem 1rem;
+  box-shadow: 0 2px 12px rgba(0, 123, 255, 0.04);
+  transition: all 0.2s ease;
+}
+
+.match-item:hover {
+  box-shadow: 0 4px 16px rgba(0, 123, 255, 0.08);
+}
+
+.match-score {
+  font-weight: bold;
+}
+
+.match-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+.view-profile-link {
+  padding: 0.4rem 0.9rem;
+  background-color: #007bff;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background 0.2s ease;
+}
+
+.view-profile-link:hover {
+  background-color: #0056b3;
+}
+
+.chat-button {
+  padding: 0.4rem 0.9rem;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s ease;
+}
+
+.chat-button:hover {
+  background-color: #218838;
+}
+
+@media (max-width: 600px) {
+  .match-actions {
+    flex-direction: column;
+    align-items: stretch;
   }
 
-  .match-subtitle {
-    text-align: center;
-    font-size: 0.95rem;
-    color: #333;
-    margin-top: -1rem;
-    margin-bottom: 1.5rem;
-  }
-  
-  
-  .filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-    justify-content: center;
-  }
-  
-  .filters select {
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 1rem;
-  }
-  
-  .filters button {
-    padding: 0.5rem 1rem;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 500;
-  }
-  
-  .filters button:hover {
-    background-color: #0056b3;
-  }
-  
-  .match-list {
-    list-style: none;
-    padding: 0;
-  }
-  
   .match-item {
-    background: #f7faff;
-    border: 1px solid #d6e9ff;
-    border-radius: 8px;
     padding: 1rem;
-    margin-bottom: 1rem;
   }
-  
-  .match-score {
-    color: #007bff;
-    font-weight: bold;
+
+  .view-profile-link,
+  .chat-button {
+    width: 100%;
+    text-align: center;
   }
-  
-  .match-item a {
-    color: #0056b3;
-    font-weight: 500;
-    text-decoration: none;
-    margin-right: 1rem;
-  }
-  
-  .match-item button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 0.4rem 0.8rem;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .match-item button:hover {
-    background-color: #218838;
-  }
-  
-  @media (max-width: 600px) {
-    .filters {
-      flex-direction: column;
-      align-items: stretch;
-    }
-  
-    .match-item {
-      font-size: 0.95rem;
-    }
-  }
-  
+}

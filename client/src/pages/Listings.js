@@ -68,8 +68,8 @@ export default function Listings() {
           .filter((listing) =>
             listing.location.toLowerCase().includes(locationFilter.toLowerCase())
           )
-          .filter((listing) => (petFriendlyOnly ? listing.pets === "Yes" : true))
-          .filter((listing) => (smokerFriendlyOnly ? listing.smoking === "Yes" : true))
+          .filter((listing) => (petFriendlyOnly ? listing.rules?.noPets === true : true))
+          .filter((listing) => (smokerFriendlyOnly ? listing.rules?.noSmoking === true : true))
           .sort((a, b) => {
             if (priceSort === "low") return a.price - b.price;
             if (priceSort === "high") return b.price - a.price;

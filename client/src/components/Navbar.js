@@ -1,32 +1,61 @@
 // Navbar.js
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 import "../styles/Navbar.css";
+import axios from "axios";
 
 export default function Navbar() {
   const { user, logoutUser } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [hasGroup, setHasGroup] = useState(false);
+  const [hasInvite, setHasInvite] = useState(false);
+
+  useEffect(() => {
+    const fetchGroupStatus = async () => {
+      if (!user) return;
+
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get("http://localhost:5000/groups/mygroup", {
+          headers: { "x-access-token": token },
+        });
+
+        const group = res.data;
+        const userId = user.id || user._id;
+
+        const isMember = group.members.some((m) => m._id === userId);
+        const isCreator = group.creator._id === userId;
+        const hasInvitePending = group.pendingInvites.some((inv) => inv._id === userId);
+
+        setHasGroup(isCreator || isMember);
+        setHasInvite(hasInvitePending);
+      } catch (err) {
+        setHasGroup(false);
+        setHasInvite(false);
+      }
+    };
+
+    fetchGroupStatus();
+  }, [user]);
 
   const accountType = user?.accountType;
 
   const show = {
-    dashboard: accountType === "student" || accountType === "admin" || accountType === "listing owner",
+    dashboard: ["student", "admin", "listing owner"].includes(accountType),
     inbox: !!user,
-    matches: accountType === "student" || accountType === "admin",
+    matches: ["student", "admin"].includes(accountType),
     listings: true,
-    createListing: accountType === "listing owner" || accountType === "admin",
-    applications: accountType === "listing owner" || accountType === "admin",
-    groups: accountType === "student" || accountType === "admin",
-    invites: accountType === "student" || accountType === "admin",
+    createListing: ["listing owner", "admin"].includes(accountType),
+    applications: ["listing owner", "admin"].includes(accountType),
+    groups: hasGroup,
+    invites: hasInvite,
     admin: accountType === "admin",
   };
 
   return (
     <nav className="navbar">
-      <div className="burger" onClick={() => setMenuOpen(!menuOpen)}>
-        ☰
-      </div>
+      <div className="burger" onClick={() => setMenuOpen(!menuOpen)}>☰</div>
 
       <div className={`nav-links ${menuOpen ? "open" : ""}`}>
         <div className="nav-left">
