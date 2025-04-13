@@ -1,0 +1,71 @@
+.auth-container {
+    padding: 2rem;
+    max-width: 600px;
+    margin: auto;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 0 12px rgba(0, 123, 255, 0.1);
+    color: #000;
+  }
+  
+  .auth-header {
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    color: #007bff;
+  }
+  
+  .auth-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-between;
+  }
+  
+  .auth-form input,
+  .auth-form select,
+  .auth-form textarea {
+    flex: 1 1 45%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+  }
+  
+  .auth-form textarea {
+    flex: 1 1 100%;
+    resize: vertical;
+  }
+  
+  .auth-submit {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .auth-submit:hover {
+    background-color: #0056b3;
+  }
+  
+  .auth-checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+    font-size: 0.95rem;
+  }
+  
+  @media (max-width: 768px) {
+    .auth-form input,
+    .auth-form select,
+    .auth-form textarea {
+      flex: 1 1 100%;
+    }
+  }
+  

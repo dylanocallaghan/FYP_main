@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import "../styles/Login.css";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -56,9 +57,9 @@ export default function Register() {
   };
 
   return (
-    <div className="form-container">
-      <h2>Register</h2>
-      <form onSubmit={handleSubmit}>
+    <div className="auth-container">
+      <h2 className="auth-header">Register</h2>
+      <form onSubmit={handleSubmit} className="auth-form">
         <input name="name" placeholder="Name" onChange={handleChange} required />
         <input name="username" placeholder="Username" onChange={handleChange} required />
         <input name="email" type="email" placeholder="Email" onChange={handleChange} required />
@@ -108,26 +109,20 @@ export default function Register() {
           <option value="No">No</option>
         </select>
 
-        <label>
-          <input type="checkbox" name="openTo.smokers" onChange={handleChange} /> Open to living with smokers
-        </label>
-        <label>
-          <input type="checkbox" name="openTo.petOwners" onChange={handleChange} /> Open to living with pet owners
-        </label>
-        <label>
-          <input type="checkbox" name="openTo.mixedGender" onChange={handleChange} /> Open to mixed-gender households
-        </label>
-        <label>
-          <input type="checkbox" name="openTo.internationalStudents" onChange={handleChange} /> Open to international students
-        </label>
-
         <textarea
           name="bio"
           placeholder="Short bio about yourself..."
           onChange={handleChange}
         />
 
-        <button type="submit">Register</button>
+        <div className="auth-checkboxes">
+          <label><input type="checkbox" name="openTo.smokers" onChange={handleChange} /> Open to living with smokers</label>
+          <label><input type="checkbox" name="openTo.petOwners" onChange={handleChange} /> Open to living with pet owners</label>
+          <label><input type="checkbox" name="openTo.mixedGender" onChange={handleChange} /> Open to mixed-gender households</label>
+          <label><input type="checkbox" name="openTo.internationalStudents" onChange={handleChange} /> Open to international students</label>
+        </div>
+
+        <button type="submit" className="auth-submit">Register</button>
       </form>
     </div>
   );

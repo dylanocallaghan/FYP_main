@@ -21,8 +21,9 @@ const Listings = () => {
 
   return (
     <div className="listings-container">
-      <h2>🏡 Available Listings</h2>
+    <h2>🏡 Available Listings</h2>
 
+    <div className="listing-grid">
       {listings.map((listing) => (
         <div key={listing._id} className="listing-card">
           <h3>{listing.title}</h3>
@@ -32,18 +33,19 @@ const Listings = () => {
           <p><strong>Features:</strong> {listing.features.join(', ')}</p>
           <p><strong>Posted by:</strong> {listing.landlordEmail}</p>
 
-          {/* Display images */}
           {listing.images && Array.isArray(listing.images) && listing.images.map((image, index) => {
-            // Check if the image path is relative to your server path and update accordingly
             const imageURL = `http://localhost:5000/uploads/${image.split("\\").pop()}`;
-            return <img key={index} src={imageURL} alt={`listing-image-${index}`} />;          
+            return <img key={index} src={imageURL} alt={`listing-image-${index}`} />;
           })}
+
           <button onClick={() => navigate(`/listing/${listing._id}`)}>
             View & Apply
           </button>
         </div>
       ))}
     </div>
+  </div>
+
   );
 };
 

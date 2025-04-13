@@ -27,7 +27,7 @@ export default function Profile() {
   const {
     name,
     username,
-    email1,
+    email,
     accountType,
     gender,
     pronouns,
@@ -52,7 +52,7 @@ export default function Profile() {
         <div className="profile-left">
           <div className="profile-section">
             <p><span className="profile-label">Username:</span> <span className="profile-value">{username}</span></p>
-            <p><span className="profile-label">Email:</span> <span className="profile-value">{email1}</span></p>
+            <p><span className="profile-label">Email:</span> <span className="profile-value">{email}</span></p>
             <p><span className="profile-label">Account Type:</span> <span className="profile-value">{accountType}</span></p>
             <p><span className="profile-label">Gender:</span> <span className="profile-value">{gender}</span></p>
             <p><span className="profile-label">Pronouns:</span> <span className="profile-value">{pronouns}</span></p>

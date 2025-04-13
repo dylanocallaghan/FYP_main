@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../components/AuthContext";
+import "../styles/Login.css";
 
 export default function Login({ setLoggedIn }) {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -31,15 +32,9 @@ export default function Login({ setLoggedIn }) {
       const data = await res.json();
 
       if (res.ok) {
-        try {
-          await loginUser(data.token, data.user);
-          if (setLoggedIn) setLoggedIn(true); // safe check
-          navigate("/dashboard", { replace: true });
-        } catch (err) {
-          console.warn("loginUser() threw but login succeeded:", err);
-          // No error message shown here anymore since app still works
-          navigate("/dashboard", { replace: true });
-        }
+        await loginUser(data.token, data.user);
+        if (setLoggedIn) setLoggedIn(true);
+        navigate("/dashboard", { replace: true });
       } else {
         setMessage(`❌ ${data.error || "Login failed"}`);
       }
@@ -50,12 +45,10 @@ export default function Login({ setLoggedIn }) {
   };
 
   return (
-    <div style={{ padding: "2rem" }}>
-      <h2>Login</h2>
-      {redirectMessage && (
-        <p style={{ color: "red", fontWeight: "bold" }}>{redirectMessage}</p>
-      )}
-      <form onSubmit={handleSubmit}>
+    <div className="auth-container">
+      <h2 className="auth-header">Login</h2>
+      {redirectMessage && <p style={{ color: "red", fontWeight: "bold" }}>{redirectMessage}</p>}
+      <form onSubmit={handleSubmit} className="auth-form">
         <input
           placeholder="Email"
           type="email"
@@ -70,7 +63,7 @@ export default function Login({ setLoggedIn }) {
           value={form.password}
           onChange={(e) => setForm({ ...form, password: e.target.value })}
         />
-        <button type="submit">Login</button>
+        <button type="submit" className="auth-submit">Login</button>
       </form>
       {message && <p style={{ color: "red", fontWeight: "bold" }}>{message}</p>}
     </div>

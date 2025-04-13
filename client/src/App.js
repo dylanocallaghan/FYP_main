@@ -37,7 +37,7 @@ function App() {
           <Route path="/user-profile" element={<UserProfile />} />
           <Route path="/pending-invites" element={<ProtectedRoute><PendingInvites /></ProtectedRoute>} />
           <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/listings" element={<ProtectedRoute><Listings /></ProtectedRoute>} />
+          <Route path="/listings" element={<Listings />} />
           <Route path="/inbox" element={<ProtectedRoute><Inbox /></ProtectedRoute>} />
           <Route path="/applications" element={<LandlordApplications />} />
           <Route path="/listing/:id" element={<ProtectedRoute><ListingDetails /></ProtectedRoute>} />

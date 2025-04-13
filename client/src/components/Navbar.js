@@ -31,9 +31,9 @@ export default function Navbar() {
       <div className={`nav-links ${menuOpen ? "open" : ""}`}>
         <div className="nav-left">
           {show.dashboard && <Link to="/dashboard">Dashboard</Link>}
-          {show.inbox && <Link to="/inbox">📥 Inbox</Link>}
-          {show.matches && <Link to="/matches">❤️ Matches</Link>}
           {show.listings && <Link to="/listings">🏠 Listings</Link>}
+          {show.matches && <Link to="/matches">❤️ Matches</Link>}
+          {show.inbox && <Link to="/inbox">📥 Inbox</Link>}
           {show.createListing && <Link to="/create">📦 Create Listing</Link>}
           {show.applications && <Link to="/applications">Applications</Link>}
           {show.groups && <Link to="/my-group">👥 Groups</Link>}
