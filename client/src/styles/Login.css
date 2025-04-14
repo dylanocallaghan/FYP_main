@@ -1,71 +1,97 @@
 .auth-container {
-    padding: 2rem;
-    max-width: 600px;
-    margin: auto;
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 0 12px rgba(0, 123, 255, 0.1);
-    color: #000;
-  }
-  
-  .auth-header {
-    text-align: center;
-    font-size: 1.8rem;
-    font-weight: bold;
-    margin-bottom: 2rem;
-    color: #007bff;
-  }
-  
-  .auth-form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: space-between;
-  }
-  
+  padding: 2.5rem 2rem;
+  max-width: 500px;
+  margin: 2rem auto;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0, 123, 255, 0.1);
+  color: #000;
+}
+
+.auth-header {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2.5rem;
+  color: #007bff;
+}
+
+.auth-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  justify-content: space-between;
+}
+
+.auth-form input,
+.auth-form select,
+.auth-form textarea {
+  flex: 1 1 45%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.auth-form textarea {
+  flex: 1 1 100%;
+  resize: vertical;
+  min-height: 80px;
+}
+
+.auth-submit {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.auth-submit:hover {
+  background-color: #0056b3;
+}
+
+.auth-checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+}
+
+.student-fields {
+  overflow: hidden;
+  max-height: 1000px;
+  opacity: 1;
+  transition: all 0.4s ease-in-out;
+}
+
+.student-fields.hidden {
+  max-height: 0;
+  opacity: 0;
+  padding: 0;
+  margin: 0;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
   .auth-form input,
   .auth-form select,
   .auth-form textarea {
-    flex: 1 1 45%;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-  }
-  
-  .auth-form textarea {
     flex: 1 1 100%;
-    resize: vertical;
   }
-  
+
+  .auth-container {
+    padding: 2rem 1rem;
+    margin: 1rem;
+  }
+
   .auth-submit {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 0.6rem 1.2rem;
-    font-size: 1rem;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+    padding: 0.75rem;
   }
-  
-  .auth-submit:hover {
-    background-color: #0056b3;
-  }
-  
-  .auth-checkboxes {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-top: 1rem;
-    font-size: 0.95rem;
-  }
-  
-  @media (max-width: 768px) {
-    .auth-form input,
-    .auth-form select,
-    .auth-form textarea {
-      flex: 1 1 100%;
-    }
-  }
-  
+}

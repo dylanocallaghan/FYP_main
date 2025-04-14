@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "../styles/Login.css";
+import "../styles/Login.css"; // your existing styling
 
 export default function Register() {
   const navigate = useNavigate();
@@ -70,57 +70,60 @@ export default function Register() {
           <option value="listing owner">Listing Owner</option>
         </select>
 
-        <select name="gender" onChange={handleChange}>
-          <option value="">Select Gender</option>
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-          <option value="Non-binary">Non-binary</option>
-          <option value="Prefer not to say">Prefer not to say</option>
-        </select>
+        {/* Conditionally show student fields with animation */}
+        <div className={`student-fields ${formData.accountType === "student" ? "visible" : "hidden"}`}>
+          <select name="gender" onChange={handleChange}>
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Non-binary">Non-binary</option>
+            <option value="Prefer not to say">Prefer not to say</option>
+          </select>
 
-        <input name="pronouns" placeholder="Pronouns (e.g. she/her)" onChange={handleChange} />
-        <input name="age" type="number" placeholder="Age" onChange={handleChange} />
-        <input name="course" placeholder="Course" onChange={handleChange} />
+          <input name="pronouns" placeholder="Pronouns (e.g. she/her)" onChange={handleChange} />
+          <input name="age" type="number" placeholder="Age" onChange={handleChange} />
+          <input name="course" placeholder="Course" onChange={handleChange} />
 
-        <select name="year" onChange={handleChange}>
-          <option value="">Select Year</option>
-          <option value="1st Year">1st Year</option>
-          <option value="2nd Year">2nd Year</option>
-          <option value="3rd Year">3rd Year</option>
-          <option value="Final Year">Final Year</option>
-          <option value="Postgraduate">Postgraduate</option>
-        </select>
+          <select name="year" onChange={handleChange}>
+            <option value="">Select Year</option>
+            <option value="1st Year">1st Year</option>
+            <option value="2nd Year">2nd Year</option>
+            <option value="3rd Year">3rd Year</option>
+            <option value="Final Year">Final Year</option>
+            <option value="Postgraduate">Postgraduate</option>
+          </select>
 
-        <select name="smoking" onChange={handleChange}>
-          <option value="">Smoker?</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
+          <select name="smoking" onChange={handleChange}>
+            <option value="">Smoker?</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
 
-        <select name="drinking" onChange={handleChange}>
-          <option value="">Drinks Alcohol?</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
+          <select name="drinking" onChange={handleChange}>
+            <option value="">Drinks Alcohol?</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
 
-        <select name="pets" onChange={handleChange}>
-          <option value="">Has Pets?</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
+          <select name="pets" onChange={handleChange}>
+            <option value="">Has Pets?</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+
+          <div className="auth-checkboxes">
+            <label><input type="checkbox" name="openTo.smokers" onChange={handleChange} /> Open to living with smokers</label>
+            <label><input type="checkbox" name="openTo.petOwners" onChange={handleChange} /> Open to living with pet owners</label>
+            <label><input type="checkbox" name="openTo.mixedGender" onChange={handleChange} /> Open to mixed-gender households</label>
+            <label><input type="checkbox" name="openTo.internationalStudents" onChange={handleChange} /> Open to international students</label>
+          </div>
+        </div>
 
         <textarea
           name="bio"
           placeholder="Short bio about yourself..."
           onChange={handleChange}
         />
-
-        <div className="auth-checkboxes">
-          <label><input type="checkbox" name="openTo.smokers" onChange={handleChange} /> Open to living with smokers</label>
-          <label><input type="checkbox" name="openTo.petOwners" onChange={handleChange} /> Open to living with pet owners</label>
-          <label><input type="checkbox" name="openTo.mixedGender" onChange={handleChange} /> Open to mixed-gender households</label>
-          <label><input type="checkbox" name="openTo.internationalStudents" onChange={handleChange} /> Open to international students</label>
-        </div>
 
         <button type="submit" className="auth-submit">Register</button>
       </form>
