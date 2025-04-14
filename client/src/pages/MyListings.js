@@ -8,6 +8,7 @@ import { Carousel } from "react-responsive-carousel";
 export default function MyListings() {
   const [listings, setListings] = useState([]);
   const [approvedApps, setApprovedApps] = useState([]);
+  const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
@@ -38,6 +39,12 @@ export default function MyListings() {
 
   if (loading) return <p>Loading your listings...</p>;
 
+  const isFilled = (listingId) => {
+    return approvedApps.some(
+      (a) => a.listingId === listingId || a.listingId?._id === listingId
+    );
+  };
+
   const getLeaseInfo = (listingId) => {
     const app = approvedApps.find(
       (a) => a.listingId === listingId || a.listingId?._id === listingId
@@ -45,12 +52,32 @@ export default function MyListings() {
     return app ? `${app.leaseLength} month lease` : null;
   };
 
+  const filteredListings = listings.filter((listing) => {
+    if (filter === "filled") return isFilled(listing._id);
+    if (filter === "unfilled") return !isFilled(listing._id);
+    return true;
+  });
+
   return (
     <div className="listings-container">
       <h2>📋 My Listings</h2>
 
+      {/* 🔍 Styled Filter Dropdown */}
+      <div className="filter-bar">
+        <label htmlFor="filter">Show:</label>
+        <select
+          id="filter"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+        >
+          <option value="all">All Listings</option>
+          <option value="filled">Filled Listings</option>
+          <option value="unfilled">Unfilled Listings</option>
+        </select>
+      </div>
+
       <div className="listing-grid">
-        {listings.map((listing) => {
+        {filteredListings.map((listing) => {
           const leaseText = getLeaseInfo(listing._id);
 
           return (

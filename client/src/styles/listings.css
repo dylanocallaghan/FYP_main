@@ -87,6 +87,33 @@
   margin-top: 10px;
 }
 
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #f8f8f8;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.filter-bar select {
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  cursor: pointer;
+  background-color: #fff;
+  transition: border-color 0.2s ease-in-out;
+}
+
+.filter-bar select:hover {
+  border-color: #888;
+}
+
 
 /* Carousel styling */
 .listing-carousel {
