@@ -117,3 +117,35 @@
   90% { opacity: 1; transform: translateY(0); }
   100% { opacity: 0; transform: translateY(-10px); }
 }
+
+@media (max-width: 768px) {
+  .filter-controls {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: stretch;
+  }
+
+  .application-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .application-actions button {
+    width: 100%;
+  }
+
+  .application-card {
+    padding: 1rem;
+    font-size: 0.95rem;
+  }
+
+  .chat-popup {
+    font-size: 0.95rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .no-applications {
+    font-size: 1rem;
+  }
+}
+
