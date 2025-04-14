@@ -14,6 +14,7 @@ const ListingDetails = () => {
   const [user, setUser] = useState(null);
   const [groupId, setGroupId] = useState(null);
   const [alreadyApplied, setAlreadyApplied] = useState(false);
+  const [leaseLength, setLeaseLength] = useState("");
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -46,10 +47,19 @@ const ListingDetails = () => {
         });
 
         const applications = res.data;
-        const match = applications.find(app =>
-          (applyAs === "group" && app.groupId?._id === groupId) ||
-          (applyAs === "individual" && app.applicantId === user._id)
-        );
+
+        // ✅ Universal match logic (individual or group)
+        const match = applications.find(app => {
+          const groupMatch = app.groupId?._id === groupId;
+          const applicantMatch =
+            String(app.applicantId) === String(user._id) ||
+            String(app.applicantId?._id) === String(user._id);
+          return groupMatch || applicantMatch;
+        });
+
+        console.log("Applications from backend:", applications);
+        console.log("Current user ID:", user._id);
+        console.log("Current group ID:", groupId);
 
         if (match) {
           setAlreadyApplied(true);
@@ -63,7 +73,7 @@ const ListingDetails = () => {
     if (user) {
       checkExistingApplication();
     }
-  }, [user, id, groupId, applyAs]);
+  }, [user, id, groupId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -74,9 +84,16 @@ const ListingDetails = () => {
       return;
     }
 
+    const lease = parseInt(leaseLength);
+    if (![3, 6, 9, 12].includes(lease)) {
+      alert("Please select a valid lease length.");
+      return;
+    }
+
     const payload = {
       listingId: id,
-      message
+      message,
+      leaseLength: lease,
     };
 
     if (applyAs === "group" && groupId) {
@@ -93,7 +110,7 @@ const ListingDetails = () => {
       navigate("/listings");
     } catch (err) {
       console.error("Application error:", err);
-      alert("Something went wrong.");
+      alert("🚫 You have already applied to this listing.");
     }
   };
 
@@ -181,9 +198,9 @@ const ListingDetails = () => {
         <hr />
 
         {alreadyApplied ? (
-          <p style={{ color: "green", marginTop: "1rem" }}>
-            ✅ You've already applied to this listing.
-          </p>
+          <div style={{ marginTop: "1rem", color: "green" }}>
+            ✅ You've already applied to this listing. You cannot apply again.
+          </div>
         ) : (
           <form onSubmit={handleSubmit}>
             {groupId && (
@@ -206,6 +223,18 @@ const ListingDetails = () => {
                 </label>
               </div>
             )}
+
+            <select
+              value={leaseLength}
+              onChange={(e) => setLeaseLength(e.target.value)}
+              required
+            >
+              <option value="">Select Lease Duration</option>
+              <option value="3">3 Months</option>
+              <option value="6">6 Months</option>
+              <option value="9">9 Months</option>
+              <option value="12">12 Months</option>
+            </select>
 
             <textarea
               placeholder="Write a short message..."

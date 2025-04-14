@@ -4,16 +4,21 @@ const applicationSchema = new mongoose.Schema({
   groupId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Group',
-    required: false // for group applications only
+    required: false
   },
   applicantId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: false // for solo applications only
+    required: false
   },
   listingId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Listing',
+    required: true
+  },
+  leaseLength: {
+    type: Number,
+    enum: [3, 6, 9, 12],
     required: true
   },
   status: {

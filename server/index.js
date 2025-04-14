@@ -12,10 +12,10 @@ const authRoutes = require("./routes/authRoutes");
 const listingRoutes = require("./routes/listingRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const streamRoutes = require("./routes/streamRoutes");
-const groupRoutes = require('./routes/groupRoutes');
-const applicationRoutes = require('./routes/applicationRoutes');
+const groupRoutes = require("./routes/groupRoutes");
+const applicationRoutes = require("./routes/applicationRoutes");
 const adminRoutes = require("./routes/adminRoutes");
-
+const Application = require("./models/Application");
 
 // Middleware
 app.use(cors());
@@ -29,13 +29,14 @@ mongoose.connect("mongodb://localhost:27017/student_housing")
 
 // Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/listings", listingRoutes);
+app.use("/api/listings", listingRoutes); 
 app.use("/api/messages", chatRoutes);
-app.use("/messages", chatRoutes); 
-app.use("/stream", streamRoutes); 
-app.use('/groups', groupRoutes);
-app.use('/applications', applicationRoutes);
-app.use("/admin", adminRoutes);
+app.use("/api/stream", streamRoutes);
+app.use("/api/groups", groupRoutes);
+app.use("/api/applications", applicationRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/groups", groupRoutes);
+app.use('/applications', applicationRoutes); 
 
 
 // Start server

@@ -241,6 +241,9 @@ const LandlordApplications = () => {
               <p><strong>Message:</strong> {app.message}</p>
               <p><strong>Status:</strong> <span className={`status ${app.status}`}>{app.status}</span></p>
               <p><strong>Listing:</strong> {listingNamesMap[app.listingId] || app.listingId}</p>
+              <p><strong>Lease Length:</strong> {app.leaseLength ? `${app.leaseLength} months` : "N/A"}</p>
+
+
 
               {app.groupId ? (
                 <div className="application-group-info">

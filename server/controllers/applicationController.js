@@ -2,11 +2,10 @@
 const Application = require("../models/Application");
 const Listing = require("../models/Listing");
 
-
 // Create a new application
 const createApplication = async (req, res) => {
   try {
-    const { listingId, groupId, applicantId, message } = req.body;
+    const { listingId, groupId, applicantId, message, leaseLength } = req.body;
 
     if (!listingId) {
       return res.status(400).json({ error: "Listing ID is required." });
@@ -16,11 +15,16 @@ const createApplication = async (req, res) => {
       return res.status(400).json({ error: "Either groupId or applicantId must be provided." });
     }
 
+    if (![3, 6, 9, 12].includes(Number(leaseLength))) {
+      return res.status(400).json({ error: "Lease length must be 3, 6, 9, or 12." });
+    }
+
     const newApplication = new Application({
       listingId,
       groupId: groupId || undefined,
       applicantId: applicantId || undefined,
       message,
+      leaseLength,
       status: "pending"
     });
 
@@ -32,87 +36,102 @@ const createApplication = async (req, res) => {
   }
 };
 
-// Get all applications for a listing
+// ✅ FIXED: Now populates both groupId AND applicantId
 const getApplicationsByListing = async (req, res) => {
-    try {
-      const listingId = req.params.id;
-      const applications = await Application.find({ listingId }).populate('groupId');
-      res.json(applications);
-    } catch (error) {
-      console.error('Error fetching applications:', error);
-      res.status(500).json({ error: 'Server error' });
-    }
-  };
+  try {
+    const listingId = req.params.id;
+    const applications = await Application.find({ listingId })
+      .populate('groupId')
+      .populate('applicantId'); // ✅ Add this
+
+    res.json(applications);
+  } catch (error) {
+    console.error('Error fetching applications:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
 
 const updateApplicationStatus = async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { status } = req.body;
-  
-      if (!['approved', 'rejected'].includes(status)) {
-        return res.status(400).json({ message: 'Invalid status value' });
-      }
-  
-      const updated = await Application.findByIdAndUpdate(
-        id,
-        { status },
-        { new: true }
-      );
-  
-      if (!updated) {
-        return res.status(404).json({ message: 'Application not found' });
-      }
-  
-      res.json(updated);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Error updating application status' });
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!['approved', 'rejected'].includes(status)) {
+      return res.status(400).json({ message: 'Invalid status value' });
     }
-  };
 
-  const getApplicationsForLandlord = async (req, res) => {
-    try {
-      const landlordEmail = req.user.email;
+    const updated = await Application.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    );
 
-        console.log("LANDLORD EMAIL:", landlordEmail);
-
-        const listings = await Listing.find({ landlordEmail });
-        const listingIds = listings.map(listing => listing._id);
-
-        console.log("FOUND LISTINGS:", listingIds);
-
-        const applications = await Application.find({ listingId: { $in: listingIds } })
-        .populate("applicantId") // ✅ for solo applicants
-        .populate({ path: "groupId", populate: { path: "creator", model: "User" } }); // ✅ for group creators
-
-
-        console.log("APPLICATIONS FOUND:", applications);
-
-        res.json(applications);
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: "Failed to fetch applications." });
+    if (!updated) {
+      return res.status(404).json({ message: 'Application not found' });
     }
-  };
 
-  const deleteApplication = async (req, res) => {
-    try {
-      const { id } = req.params;
-      const deleted = await Application.findByIdAndDelete(id);
-      if (!deleted) return res.status(404).json({ error: "Application not found" });
-      res.json({ message: "Application deleted" });
-    } catch (err) {
-      console.error("Delete error:", err);
-      res.status(500).json({ error: "Failed to delete application" });
-    }
-  };
-  
+    res.json(updated);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error updating application status' });
+  }
+};
 
-  module.exports = {
-    createApplication,
-    getApplicationsByListing,
-    updateApplicationStatus,
-    getApplicationsForLandlord,
-    deleteApplication
-  };
+const getApplicationsForLandlord = async (req, res) => {
+  try {
+    const landlordEmail = req.user.email;
+
+    const listings = await Listing.find({ landlordEmail });
+    const listingIds = listings.map(listing => listing._id);
+
+    const applications = await Application.find({ listingId: { $in: listingIds } })
+      .populate("applicantId")
+      .populate({ path: "groupId", populate: { path: "creator", model: "User" } });
+
+    res.json(applications);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch applications." });
+  }
+};
+
+const deleteApplication = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await Application.findByIdAndDelete(id);
+    if (!deleted) return res.status(404).json({ error: "Application not found" });
+    res.json({ message: "Application deleted" });
+  } catch (err) {
+    console.error("Delete error:", err);
+    res.status(500).json({ error: "Failed to delete application" });
+  }
+};
+
+const getApprovedApplicationsByOwner = async (req, res) => {
+  try {
+    const landlordEmail = req.user.email;
+    const listings = await Listing.find({ landlordEmail });
+    const listingIds = listings.map(listing => listing._id);
+
+    const approvedApps = await Application.find({
+      status: "approved",
+      listingId: { $in: listingIds }
+    });
+
+    res.json(approvedApps);
+  } catch (err) {
+    console.error("Error fetching approved applications:", err);
+    res.status(500).json({ error: "Failed to fetch approved applications" });
+  }
+};
+
+
+module.exports = {
+  createApplication,
+  getApplicationsByListing,
+  updateApplicationStatus,
+  getApplicationsForLandlord,
+  deleteApplication,
+  getApprovedApplicationsByOwner 
+};
 

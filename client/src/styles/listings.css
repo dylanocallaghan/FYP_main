@@ -81,6 +81,13 @@
   background-color: #0056b3;
 }
 
+.filled-text {
+  color: green;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+
 /* Carousel styling */
 .listing-carousel {
   margin: 1rem 0;

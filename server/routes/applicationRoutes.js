@@ -7,14 +7,19 @@ const {
   getApplicationsByListing,
   updateApplicationStatus,
   getApplicationsForLandlord,
-  deleteApplication
-} = require('../controllers/applicationController');
+  deleteApplication,
+  getApprovedApplicationsByOwner, 
+} = require("../controllers/applicationController");
+
 
 
 router.post('/', verifyToken, createApplication);
 router.get('/listing/:id', verifyToken, getApplicationsByListing);
 router.patch('/:id/status', verifyToken, updateApplicationStatus);
-router.get('/landlord', verifyToken, getApplicationsForLandlord);
+router.get('/landlord', verifyToken, getApplicationsForLandlord); 
 router.delete('/:id', verifyToken, deleteApplication);
+router.get("/approved/by-owner", verifyToken, getApprovedApplicationsByOwner);
+router.get("/approved-apps", verifyToken, getApprovedApplicationsByOwner);
+
 
 module.exports = router;

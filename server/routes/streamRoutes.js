@@ -1,5 +1,6 @@
 const express = require('express');
 const { StreamChat } = require('stream-chat');
+const { verifyToken } = require('../middleware/authMiddleware');
 require('dotenv').config();
 
 const router = express.Router();

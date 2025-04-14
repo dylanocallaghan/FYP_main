@@ -38,11 +38,15 @@ export const AuthProvider = ({ children }) => {
     if (!u?.username || streamClient.userID === u.username) return;
 
     try {
-      const res = await fetch("http://localhost:5000/stream/getToken", {
+      const res = await fetch("http://localhost:5000/api/stream/getToken", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: u.username }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}` // ✅ Secure it
+        },
+        body: JSON.stringify({ id: u.username }), // ✅ Match backend
       });
+      
 
       const data = await res.json();
       if (!data.token) throw new Error("No token returned from /getToken");

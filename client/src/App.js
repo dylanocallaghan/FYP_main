@@ -15,6 +15,7 @@ import PendingInvites from "./pages/PendingInvites";
 import ListingDetails from "./pages/ListingDetails";
 import LandlordApplications from "./pages/LandlordApplications";
 import AdminDashboard from "./pages/AdminDashboard";
+import MyListings from "./pages/MyListings";
 import Quiz from "./pages/Quiz";
 import './styles/App.css';
 
@@ -42,6 +43,7 @@ function App() {
           <Route path="/listing/:id" element={<ProtectedRoute><ListingDetails /></ProtectedRoute>} />
           <Route path="/create-group" element={<CreateGroup />} />
           <Route path="/compatibility-quiz" element={<Quiz />} />
+          <Route path="/my-listings" element={<MyListings />} />
         </Routes>
       </div>
     </BrowserRouter>
