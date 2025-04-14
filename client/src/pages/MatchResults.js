@@ -74,13 +74,13 @@ export default function MatchResults() {
                 {m.score}% compatible
               </span>
               <div className="match-actions" style={{ marginTop: "5px" }}>
-                <Link
-                  to={`/profile/${m.userId}`}
-                  state={{ profile: m }}
-                  className="view-profile-link"
-                >
-                  View Profile
-                </Link>
+              <Link
+                to={`/user-profile/${m.userId}`}
+                state={{ profile: m }}
+                className="view-profile-link"
+              >
+                View Profile
+              </Link>
                 <button
                   className="chat-button"
                   onClick={(e) => {

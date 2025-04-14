@@ -15,6 +15,7 @@ const LandlordApplications = () => {
   const [sortBy, setSortBy] = useState("date");
   const [usernamesMap, setUsernamesMap] = useState({});
   const [listingNamesMap, setListingNamesMap] = useState({});
+  const [chatMessage, setChatMessage] = useState("");
 
   useEffect(() => {
     if (!token) return;
@@ -33,12 +34,23 @@ const LandlordApplications = () => {
         res.data.forEach(app => {
           listingIds.add(app.listingId);
           if (app.groupId?.members?.length) {
-            app.groupId.members.forEach(id => userIds.add(id));
-            app.groupId.pendingInvites?.forEach(id => userIds.add(id));
-            userIds.add(app.groupId.creator);
+            app.groupId.members.forEach(m => {
+              const id = typeof m === "object" ? m._id : m;
+              if (id) userIds.add(id);
+            });
+          
+            app.groupId.pendingInvites?.forEach(i => {
+              const id = typeof i === "object" ? i._id : i;
+              if (id) userIds.add(id);
+            });
+          
+            const creatorId = typeof app.groupId.creator === "object" ? app.groupId.creator._id : app.groupId.creator;
+            if (creatorId) userIds.add(creatorId);
           } else if (app.applicantId) {
-            userIds.add(app.applicantId);
+            const applicantId = typeof app.applicantId === "object" ? app.applicantId._id : app.applicantId;
+            if (applicantId) userIds.add(applicantId);
           }
+          
         });
 
         const userMap = {};
@@ -106,36 +118,46 @@ const LandlordApplications = () => {
 
   const handleCreateChat = async (app) => {
     if (!streamClient || !user) return;
-
+  
     const landlordUsername = user.username;
     const members = new Set([landlordUsername]);
-
+  
     try {
+      let usernames = [];
+  
       if (app.groupId?.members?.length) {
-        const usernames = await Promise.all(
-          app.groupId.members.map(async (id) => {
-            try {
-              const res = await axios.get(`http://localhost:5000/api/auth/user/${id}`);
-              return res.data.username;
-            } catch {
-              return null;
-            }
+        const resolved = await Promise.all(
+          app.groupId.members.map(async (m) => {
+            const id = typeof m === "object" ? m._id : m;
+            const res = await axios.get(`http://localhost:5000/api/auth/user/${id}`);
+            return res.data.username;
           })
         );
-        usernames.forEach((u) => u && members.add(u));
+        usernames = resolved.filter(Boolean); // remove any nulls
+        usernames.forEach((u) => members.add(u));
       } else if (app.applicantId) {
-        const res = await axios.get(`http://localhost:5000/api/auth/user/${app.applicantId}`);
+        const id = typeof app.applicantId === "object" ? app.applicantId._id : app.applicantId;
+        const res = await axios.get(`http://localhost:5000/api/auth/user/${id}`);
         members.add(res.data.username);
       }
-
+  
       const memberArray = Array.from(members);
       const channelId = `chat-${app._id}`;
-
+  
+      // ✅ Check if chat already exists
+      const existingChannels = await streamClient.queryChannels({ id: { $eq: channelId } });
+      if (existingChannels.length > 0) {
+        setChatMessage("💬 Chat already exists for this application.");
+        setTimeout(() => setChatMessage(""), 3000); // Hide after 3s
+        return;
+      }
+      
+  
       const channel = streamClient.channel("messaging", channelId, {
         name: `Application Chat - ${app._id}`,
         members: memberArray,
       });
-
+  
       await channel.create();
       navigate("/inbox");
     } catch (err) {
@@ -143,6 +165,8 @@ const LandlordApplications = () => {
       alert("Chat could not be created.");
     }
   };
+  
+  
 
   const handleDeleteApplication = async (id) => {
     try {
@@ -156,24 +180,30 @@ const LandlordApplications = () => {
     }
   };
 
-  const handleViewProfile = async (app) => {
-    const userId = app.applicantId || app.groupId?.creator;
-    if (!userId) return;
+  const handleViewProfile = (app) => {
+    let userId = null;
   
-    try {
-      const res = await axios.get(`http://localhost:5000/api/auth/user/${userId}`);
-      const profile = res.data;
-      navigate("/user-profile", { state: { profile } });
-    } catch (err) {
-      console.error("Failed to load profile:", err);
-      alert("Failed to load profile.");
+    if (app.applicantId) {
+      userId = typeof app.applicantId === "object" ? app.applicantId._id : app.applicantId;
+    } else if (app.groupId?.creator) {
+      userId = typeof app.groupId.creator === "object" ? app.groupId.creator._id : app.groupId.creator;
     }
-  };
   
+    if (!userId) {
+      alert("User profile not found.");
+      return;
+    }
+  
+    navigate(`/user-profile/${userId}`);
+    console.log("Navigating to user profile with ID:", userId);
+  };
+
 
   return (
     <div className="applications-page">
       <h2>Applications to Your Listings</h2>
+
+      {chatMessage && <div className="chat-popup">{chatMessage}</div>}   {/* 👈 Move this here */}
 
       <div className="filter-controls">
         <label>Status:
@@ -220,7 +250,7 @@ const LandlordApplications = () => {
                   <p><strong>Pending Invites:</strong> {app.groupId.pendingInvites?.map(id => usernamesMap[id]).join(", ")}</p>
                 </div>
               ) : app.applicantId ? (
-                <p><strong>Applicant:</strong> {usernamesMap[app.applicantId]}</p>
+                <p><strong>Applicant:</strong> {usernamesMap[typeof app.applicantId === "object" ? app.applicantId._id : app.applicantId]}</p>
               ) : null}
 
               <div className="application-actions">
@@ -239,3 +269,6 @@ const LandlordApplications = () => {
 };
 
 export default LandlordApplications;
+
+
+

@@ -82,7 +82,9 @@ const updateApplicationStatus = async (req, res) => {
         console.log("FOUND LISTINGS:", listingIds);
 
         const applications = await Application.find({ listingId: { $in: listingIds } })
-        .populate("groupId");
+        .populate("applicantId") // ✅ for solo applicants
+        .populate({ path: "groupId", populate: { path: "creator", model: "User" } }); // ✅ for group creators
+
 
         console.log("APPLICATIONS FOUND:", applications);
 
@@ -113,3 +115,4 @@ const updateApplicationStatus = async (req, res) => {
     getApplicationsForLandlord,
     deleteApplication
   };
+
