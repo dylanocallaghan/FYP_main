@@ -22,11 +22,14 @@ export default function Navbar() {
         });
 
         const group = res.data;
+        if (!group) return; // ✅ No group = skip safely
+
         const userId = user.id || user._id;
 
         const isMember = group.members.some((m) => m._id === userId);
         const isCreator = group.creator._id === userId;
         const hasInvitePending = group.pendingInvites.some((inv) => inv._id === userId);
+
 
         setHasGroup(isCreator || isMember);
         setHasInvite(hasInvitePending);

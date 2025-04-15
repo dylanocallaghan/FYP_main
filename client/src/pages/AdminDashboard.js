@@ -1,140 +1,168 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import "../styles/Admin.css";
 
 const AdminDashboard = () => {
-  const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [users, setUsers] = useState([]);
+  const [listings, setListings] = useState([]);
+  const [applications, setApplications] = useState([]);
+  const [expanded, setExpanded] = useState({});
+  const [confirm, setConfirm] = useState(null); // { id, type }
+
   const token = localStorage.getItem("token");
+  const headers = { "x-access-token": token };
 
   useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const res = await axios.get("http://localhost:5000/admin/stats", {
-          headers: { "x-access-token": token },
-        });
-        setStats(res.data);
-      } catch (err) {
-        console.error("Failed to load admin stats", err);
-      } finally {
-        setLoading(false);
-      }
+    const fetchData = async () => {
+      const [userRes, listingRes, appRes] = await Promise.all([
+        axios.get("http://localhost:5000/admin/users", { headers }),
+        axios.get("http://localhost:5000/admin/listings", { headers }),
+        axios.get("http://localhost:5000/admin/applications", { headers }),
+      ]);
+      setUsers(userRes.data);
+      setListings(listingRes.data);
+      setApplications(appRes.data);
     };
+    fetchData();
+  }, []);
 
-    fetchStats();
-  }, [token]);
+  const toggleExpanded = (id) => {
+    setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
 
-  const handleDeleteListing = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this listing?")) return;
+  const handleNoteChange = async (id, note) => {
     try {
-      await axios.delete(`http://localhost:5000/listings/${id}`, {
-        headers: { "x-access-token": token },
-      });
-      setStats((prev) => ({
-        ...prev,
-        recentListings: prev.recentListings.filter((l) => l._id !== id),
-      }));
-    } catch (err) {
-      alert("Failed to delete listing.");
+      await axios.patch(`http://localhost:5000/admin/users/${id}/note`, { note }, { headers });
+      setUsers((prev) => prev.map((u) => (u._id === id ? { ...u, adminNote: note } : u)));
+    } catch {
+      alert("Failed to save note");
     }
   };
 
-  const handleDeleteMessage = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this message?")) return;
+  const confirmDelete = (type, id) => setConfirm({ type, id });
+
+  const cancelDelete = () => setConfirm(null);
+
+  const handleConfirmDelete = async () => {
+    if (!confirm) return;
+    const { type, id } = confirm;
+
     try {
-      await axios.delete(`http://localhost:5000/messages/${id}`, {
-        headers: { "x-access-token": token },
-      });
-      setStats((prev) => ({
-        ...prev,
-        recentMessages: prev.recentMessages.filter((m) => m._id !== id),
-        totalMessages: prev.totalMessages - 1,
-      }));
-    } catch (err) {
-      alert("Failed to delete message.");
+      await axios.delete(`http://localhost:5000/admin/${type}s/${id}`, { headers });
+      if (type === "user") setUsers((prev) => prev.filter((u) => u._id !== id));
+      if (type === "listing") setListings((prev) => prev.filter((l) => l._id !== id));
+      if (type === "application") setApplications((prev) => prev.filter((a) => a._id !== id));
+      setConfirm(null);
+    } catch {
+      alert(`Failed to delete ${type}`);
     }
   };
 
-  const handleDeleteUser = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this user?")) return;
-    try {
-      await axios.delete(`http://localhost:5000/users/${id}`, {
-        headers: { "x-access-token": token },
-      });
-      setStats((prev) => ({
-        ...prev,
-        recentUsers: prev.recentUsers.filter((u) => u._id !== id),
-        totalUsers: prev.totalUsers - 1,
-      }));
-    } catch (err) {
-      alert("Failed to delete user.");
-    }
-  };
+  const getUserApps = (userId) =>
+    applications.filter((a) => a.applicantId?._id === userId);
 
-  if (loading) return <div style={{ padding: "2rem" }}>Loading admin dashboard...</div>;
-  if (!stats) return <div style={{ padding: "2rem" }}>Failed to load data.</div>;
+  const getUserListings = (email) =>
+    listings.filter((l) => l.landlordEmail === email);
+
+  const getApprovedForListing = (listingId) =>
+    applications.find((a) => a.listingId === listingId && a.status === "approved");
 
   return (
-    <div style={{ padding: "2rem" }}>
-      <h2>🛠 Admin Dashboard</h2>
+    <div className="admin-page">
+      <h2 className="admin-title">🧑‍💼 Admin Dashboard</h2>
 
-      <div style={{ display: "flex", gap: "2rem", flexWrap: "wrap", marginTop: "1rem" }}>
-        <div style={{ flex: 1, minWidth: "250px" }}>
-          <h3>📊 Stats</h3>
-          <ul>
-            <li><strong>Total Users:</strong> {stats.totalUsers}</li>
-            <li><strong>Total Listings:</strong> {stats.totalListings}</li>
-            <li><strong>Total Messages:</strong> {stats.totalMessages}</li>
-          </ul>
-        </div>
+      {users.map((u) => (
+        <div key={u._id} className="admin-card">
+          <h3>{u.username} ({u.email}) — {u.accountType}</h3>
+          <p>Applications: {u.applicationCount} | Listings: {u.listingCount} | Group: {u.groupStatus}</p>
 
-        <div style={{ flex: 1, minWidth: "250px" }}>
-          <h3>🆕 Recent Listings</h3>
-          <ul>
-            {stats.recentListings.map((listing) => (
-              <li key={listing._id}>
-                {listing.title || "Untitled Listing"}
-                <button 
-                  onClick={() => handleDeleteListing(listing._id)}
-                  style={{ marginLeft: "1rem", color: "red", cursor: "pointer" }}>
-                  🗑 Delete
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
+          <textarea
+            placeholder="Admin note"
+            value={u.adminNote || ""}
+            onChange={(e) => handleNoteChange(u._id, e.target.value)}
+          />
 
-        <div style={{ flex: 1, minWidth: "250px" }}>
-          <h3>💬 Recent Messages</h3>
-          <ul>
-            {stats.recentMessages.map((msg) => (
-              <li key={msg._id}>
-                {msg.message || "[No Content]"}
-                <button 
-                  onClick={() => handleDeleteMessage(msg._id)}
-                  style={{ marginLeft: "1rem", color: "red", cursor: "pointer" }}>
-                  🗑 Delete
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
+          <div className="admin-actions">
+            {u.accountType === "student" && (
+              <button onClick={() => toggleExpanded(`apps-${u._id}`)}>View Applications</button>
+            )}
+            {u.accountType === "listing owner" && (
+              <button onClick={() => toggleExpanded(`listings-${u._id}`)}>View Listings</button>
+            )}
+            {u.accountType === "admin" && (
+              <>
+                <button onClick={() => toggleExpanded(`apps-${u._id}`)}>View Applications</button>
+                <button onClick={() => toggleExpanded(`listings-${u._id}`)}>View Listings</button>
+              </>
+            )}
+            <button onClick={() => confirmDelete("user", u._id)} className="delete-btn">
+              ❌ Delete User
+            </button>
+          </div>
 
-        <div style={{ flex: 1, minWidth: "250px" }}>
-          <h3>👥 Recent Users</h3>
-          <ul>
-            {(stats.recentUsers || []).map((user) => (
-              <li key={user._id}>
-                {user.username} ({user.email})
-                <button
-                  onClick={() => handleDeleteUser(user._id)}
-                  style={{ marginLeft: "1rem", color: "red", cursor: "pointer" }}>
-                  🗑 Delete
-                </button>
-              </li>
-            ))}
-          </ul>
+          {expanded[`apps-${u._id}`] && (
+            <div className="nested-section">
+              <h4>📄 Applications:</h4>
+              {getUserApps(u._id).length === 0 ? (
+                <p>No applications submitted.</p>
+              ) : (
+                getUserApps(u._id).map((a) => (
+                  <div key={a._id} className="listing-box">
+                    <p>
+                      • {a.listingId?.title || "Unknown Listing"} <br />
+                      Message: {a.message} <br />
+                      Status: <strong>{a.status}</strong>
+                    </p>
+                    <button onClick={() => confirmDelete("application", a._id)} className="delete-btn">
+                      Delete Application
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+
+          {expanded[`listings-${u._id}`] && (
+            <div className="nested-section">
+              <h4>🏠 Listings:</h4>
+              {getUserListings(u.email).length === 0 ? (
+                <p>No listings created.</p>
+              ) : (
+                getUserListings(u.email).map((l) => {
+                  const approved = getApprovedForListing(l._id);
+                  return (
+                    <div key={l._id} className="listing-box">
+                      <p>
+                        <strong>{l.title}</strong> — {l.city} ({l.roomType})<br />
+                        {approved ? (
+                          <span>✔️ Filled by <strong>{approved.applicantId?.username || "Group"}</strong> for {approved.leaseLength} months</span>
+                        ) : (
+                          <span>❌ No approved application</span>
+                        )}
+                      </p>
+                      <button onClick={() => confirmDelete("listing", l._id)} className="delete-btn">
+                        Delete Listing
+                      </button>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          )}
         </div>
-      </div>
+      ))}
+
+      {confirm && (
+        <div className="confirm-wrapper">
+          <div className="chat-popup confirm-popup">
+            <p>Are you sure you want to delete this {confirm.type}?</p>
+            <div>
+              <button onClick={handleConfirmDelete} className="confirm-btn">Yes, Delete</button>
+              <button onClick={cancelDelete} className="cancel-btn">Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

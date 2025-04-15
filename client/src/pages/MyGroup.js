@@ -9,6 +9,7 @@ const MyGroup = () => {
   const [loading, setLoading] = useState(true);
   const [inviteUsernames, setInviteUsernames] = useState("");
   const [showInviteForm, setShowInviteForm] = useState(false);
+  const [flashMessage, setFlashMessage] = useState(""); // ✅ for animated messages
   const token = localStorage.getItem("token");
 
   const fetchGroup = async () => {
@@ -38,16 +39,23 @@ const MyGroup = () => {
     fetchGroup();
   }, []);
 
+  useEffect(() => {
+    if (flashMessage) {
+      const timeout = setTimeout(() => setFlashMessage(""), 3000);
+      return () => clearTimeout(timeout);
+    }
+  }, [flashMessage]);
+
   const handleLeave = async () => {
     if (!group?._id) return;
     try {
       await axios.patch(`http://localhost:5000/groups/${group._id}/leave`, {}, {
         headers: { "x-access-token": token },
       });
-      alert("You have left the group.");
+      setFlashMessage("❌ You have left the group.");
       fetchGroup();
     } catch (err) {
-      alert("Error leaving group.");
+      setFlashMessage("⚠️ Error leaving group.");
     }
   };
 
@@ -57,10 +65,10 @@ const MyGroup = () => {
       await axios.delete(`http://localhost:5000/groups/${group._id}`, {
         headers: { "x-access-token": token },
       });
-      alert("Group deleted.");
+      setFlashMessage("🗑 Group deleted.");
       fetchGroup();
     } catch (err) {
-      alert("Error deleting group.");
+      setFlashMessage("❌ Error deleting group.");
     }
   };
 
@@ -76,15 +84,18 @@ const MyGroup = () => {
       );
 
       const { invited, notFound, alreadyInvited, alreadyMembers } = res.data;
-      if (invited.length > 0) alert(`✅ Invites sent to: ${invited.join(", ")}`);
-      if (alreadyInvited.length > 0) alert(`ℹ️ Already invited: ${alreadyInvited.join(", ")}`);
-      if (alreadyMembers.length > 0) alert(`👥 Already in group: ${alreadyMembers.join(", ")}`);
-      if (notFound.length > 0) alert(`⚠️ Not found: ${notFound.join(", ")}`);
+      let message = "";
 
+      if (invited.length > 0) message += `✅ Invites sent to: ${invited.join(", ")}\n`;
+      if (alreadyInvited.length > 0) message += `ℹ️ Already invited: ${alreadyInvited.join(", ")}\n`;
+      if (alreadyMembers.length > 0) message += `👥 Already in group: ${alreadyMembers.join(", ")}\n`;
+      if (notFound.length > 0) message += `⚠️ Not found: ${notFound.join(", ")}\n`;
+
+      setFlashMessage(message.trim());
       setInviteUsernames("");
       fetchGroup();
     } catch (err) {
-      alert("❌ Error sending invites.");
+      setFlashMessage("❌ Error sending invites.");
     }
   };
 
@@ -93,10 +104,10 @@ const MyGroup = () => {
       await axios.post(`http://localhost:5000/groups/${group._id}/chat`, {}, {
         headers: { "x-access-token": token },
       });
-      alert("💬 Group chat created! You’ll see it in your Inbox.");
+      setFlashMessage("💬 Group chat created! You’ll see it in your Inbox.");
       fetchGroup();
     } catch (err) {
-      alert("❌ Failed to create group chat.");
+      setFlashMessage("❌ Failed to create group chat.");
     }
   };
 
@@ -109,6 +120,7 @@ const MyGroup = () => {
     <div className="group-page">
       <div className="group-header">
         <h2>👥 Your Group</h2>
+        {flashMessage && <div className="chat-popup">{flashMessage}</div>}
         <div className="group-meta">
           <p><span className="meta-label">Group Name:</span> {group.name}</p>
           <p><span className="meta-label">Creator:</span> {group.creator.username}</p>

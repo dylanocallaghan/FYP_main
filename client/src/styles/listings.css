@@ -37,7 +37,8 @@
 }
 
 /* Listings grid */
-.listing-grid {
+.listing-grid,
+.listing-cards {
   display: flex;
   flex-wrap: wrap;
   gap: 1.5rem;
@@ -81,39 +82,78 @@
   background-color: #0056b3;
 }
 
+/* Filled listing tag */
 .filled-text {
   color: green;
   font-weight: bold;
   margin-top: 10px;
 }
 
-.filter-bar {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+/* Filter toggle + container */
+.filter-box {
+  text-align: center;
   margin-bottom: 1.5rem;
-  padding: 0.5rem 1rem;
-  background-color: #f8f8f8;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 500;
-  color: #333;
 }
 
-.filter-bar select {
-  padding: 0.4rem 0.75rem;
-  border-radius: 6px;
+.filter-toggle,
+.toggle-filters-btn {
+  background-color: #e4e4e4;
   border: 1px solid #ccc;
-  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  border-radius: 8px;
   cursor: pointer;
-  background-color: #fff;
-  transition: border-color 0.2s ease-in-out;
+  margin-bottom: 1rem;
 }
 
-.filter-bar select:hover {
-  border-color: #888;
+.filters-box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+  justify-content: center;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #f8f8f8;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
 }
 
+.filters-box input,
+.filters-box select {
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.checkboxes {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.filter-buttons button {
+  padding: 8px 16px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.filter-buttons .reset-button {
+  background-color: #6c757d;
+}
 
 /* Carousel styling */
 .listing-carousel {
@@ -136,14 +176,33 @@
     width: 100%;
   }
 
-  .filter-sort-bar {
+  .filters-box {
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
   }
 
-  .filter-sort-bar input,
-  .filter-sort-bar select {
+  .filter-buttons {
+    flex-direction: column;
+  }
+
+  .filter-sort-bar,
+  .filter-bar {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .filter-sort-bar select,
+  .filter-sort-bar input[type="text"],
+  .filter-sort-bar label {
     width: 90%;
+    max-width: 300px;
+  }
+
+  .filters-box input,
+  .filters-box select {
+    width: 100%;
     max-width: 300px;
   }
 }

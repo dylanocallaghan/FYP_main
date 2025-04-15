@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../components/AuthContext";
-import "../styles/PendingInvites.css"; // ✅ Link the CSS file
+import "../styles/PendingInvites.css"; // ✅ Link your local styles
 
 const PendingInvites = () => {
   const { user } = useAuth();
   const token = localStorage.getItem("token");
   const [group, setGroup] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [flashMessage, setFlashMessage] = useState(""); // ✅ flash msg state
 
   const fetchGroup = async () => {
     try {
@@ -27,15 +28,22 @@ const PendingInvites = () => {
     if (token) fetchGroup();
   }, [token]);
 
+  useEffect(() => {
+    if (flashMessage) {
+      const timeout = setTimeout(() => setFlashMessage(""), 3000);
+      return () => clearTimeout(timeout);
+    }
+  }, [flashMessage]);
+
   const handleAccept = async () => {
     try {
       await axios.patch(`http://localhost:5000/groups/${group._id}/accept`, {}, {
         headers: { "x-access-token": token },
       });
-      alert("✅ Invite accepted!");
+      setFlashMessage("✅ Invite accepted!");
       fetchGroup();
     } catch (err) {
-      alert("❌ Error accepting invite.");
+      setFlashMessage("❌ Error accepting invite.");
       console.error(err);
     }
   };
@@ -45,10 +53,10 @@ const PendingInvites = () => {
       await axios.patch(`http://localhost:5000/groups/${group._id}/decline`, {}, {
         headers: { "x-access-token": token },
       });
-      alert("❌ Invite declined.");
+      setFlashMessage("❌ Invite declined.");
       fetchGroup();
     } catch (err) {
-      alert("❌ Error declining invite.");
+      setFlashMessage("❌ Error declining invite.");
       console.error(err);
     }
   };
@@ -61,6 +69,8 @@ const PendingInvites = () => {
   return (
     <div className="pending-invites-container">
       <h2 className="pending-invites-title">⏳ Pending Invites</h2>
+
+      {flashMessage && <div className="chat-popup">{flashMessage}</div>}
 
       <h3>✅ Members</h3>
       <ul className="pending-invites-list">

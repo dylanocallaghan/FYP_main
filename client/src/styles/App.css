@@ -17,3 +17,22 @@
     overflow-y: auto; 
   }
   
+  .chat-popup {
+    background-color: #e0f7fa;
+    color: #007c91;
+    border: 1px solid #4dd0e1;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 1rem;
+    font-weight: bold;
+    animation: fadeInOut 5s ease-in-out;
+  }
+  
+  @keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(-10px); }
+    10% { opacity: 1; transform: translateY(0); }
+    90% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-10px); }
+  }
+  

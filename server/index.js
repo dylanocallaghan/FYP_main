@@ -14,7 +14,7 @@ const chatRoutes = require("./routes/chatRoutes");
 const streamRoutes = require("./routes/streamRoutes");
 const groupRoutes = require("./routes/groupRoutes");
 const applicationRoutes = require("./routes/applicationRoutes");
-const adminRoutes = require("./routes/adminRoutes");
+const adminRoutes = require('./routes/adminRoutes');
 const Application = require("./models/Application");
 
 // Middleware
@@ -34,7 +34,7 @@ app.use("/api/messages", chatRoutes);
 app.use("/api/stream", streamRoutes);
 app.use("/api/groups", groupRoutes);
 app.use("/api/applications", applicationRoutes);
-app.use("/api/admin", adminRoutes);
+app.use('/admin', adminRoutes);
 app.use("/groups", groupRoutes);
 app.use('/applications', applicationRoutes); 
 
