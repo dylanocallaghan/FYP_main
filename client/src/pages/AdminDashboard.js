@@ -9,6 +9,7 @@ const AdminDashboard = () => {
   const [expanded, setExpanded] = useState({});
   const [confirm, setConfirm] = useState(null); // { id, type }
   const [searchTerm, setSearchTerm] = useState("");
+  const [filterType, setFilterType] = useState("all");
 
   const token = localStorage.getItem("token");
   const headers = { "x-access-token": token };
@@ -41,7 +42,6 @@ const AdminDashboard = () => {
   };
 
   const confirmDelete = (type, id) => setConfirm({ type, id });
-
   const cancelDelete = () => setConfirm(null);
 
   const handleConfirmDelete = async () => {
@@ -68,22 +68,41 @@ const AdminDashboard = () => {
   const getApprovedForListing = (listingId) =>
     applications.find((a) => a.listingId === listingId && a.status === "approved");
 
-  const filteredUsers = users.filter((u) =>
-    u.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    u.username.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredUsers = users.filter((u) => {
+    const matchesSearch =
+      u.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      u.username.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesType =
+      filterType === "all" ||
+      (filterType === "student" && u.accountType === "student") ||
+      (filterType === "landlord" && u.accountType === "listing owner");
+
+    return matchesSearch && matchesType;
+  });
 
   return (
     <div className="admin-page">
       <h2 className="admin-title">🧑‍💼 Admin Dashboard</h2>
 
-      <input
-        type="text"
-        className="admin-search"
-        placeholder="Search users by name or email..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
+      <div className="admin-filters">
+        <input
+          type="text"
+          className="admin-search"
+          placeholder="Search users by name or email..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <select
+          className="admin-dropdown"
+          value={filterType}
+          onChange={(e) => setFilterType(e.target.value)}
+        >
+          <option value="all">All Accounts</option>
+          <option value="student">Students Only</option>
+          <option value="landlord">Listing Owners Only</option>
+        </select>
+      </div>
 
       {filteredUsers.map((u) => (
         <div key={u._id} className="admin-card">
