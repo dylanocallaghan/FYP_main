@@ -8,6 +8,7 @@ const AdminDashboard = () => {
   const [applications, setApplications] = useState([]);
   const [expanded, setExpanded] = useState({});
   const [confirm, setConfirm] = useState(null); // { id, type }
+  const [searchTerm, setSearchTerm] = useState("");
 
   const token = localStorage.getItem("token");
   const headers = { "x-access-token": token };
@@ -67,11 +68,24 @@ const AdminDashboard = () => {
   const getApprovedForListing = (listingId) =>
     applications.find((a) => a.listingId === listingId && a.status === "approved");
 
+  const filteredUsers = users.filter((u) =>
+    u.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    u.username.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="admin-page">
       <h2 className="admin-title">🧑‍💼 Admin Dashboard</h2>
 
-      {users.map((u) => (
+      <input
+        type="text"
+        className="admin-search"
+        placeholder="Search users by name or email..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+
+      {filteredUsers.map((u) => (
         <div key={u._id} className="admin-card">
           <h3>{u.username} ({u.email}) — {u.accountType}</h3>
           <p>Applications: {u.applicationCount} | Listings: {u.listingCount} | Group: {u.groupStatus}</p>
