@@ -163,16 +163,10 @@ const ListingDetails = () => {
           <li>Smoking: {listing.rules?.noSmoking ? "Yes" : "No"}</li>
         </ul>
 
-        {listing.landlordNote && (
-          <p><strong>Landlord Note:</strong> {listing.landlordNote}</p>
-        )}
-
-        <p><strong>Landlord Email:</strong> {listing.landlordEmail}</p>
-
         {listing.images?.length > 0 && (
           <Carousel
-            showThumbs={false}
-            showStatus={false}
+            showThumbs={true}
+            showStatus={true}
             infiniteLoop
             useKeyboardArrows
             autoPlay
@@ -180,7 +174,7 @@ const ListingDetails = () => {
             className="listing-carousel"
           >
             {listing.images.map((img, i) => {
-              const imageURL = `http://localhost:5000/uploads/${img.split("\\").pop()}`;
+              const imageURL = `http://localhost:5000/uploads/${img}`;
               return (
                 <div key={i}>
                   <img
@@ -194,6 +188,7 @@ const ListingDetails = () => {
             })}
           </Carousel>
         )}
+
 
         <hr />
 

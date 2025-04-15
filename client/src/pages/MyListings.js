@@ -37,6 +37,20 @@ export default function MyListings() {
     fetchData();
   }, [token]);
 
+  const deleteListing = async (listingId) => {
+    if (!window.confirm("Are you sure you want to delete this listing?")) return;
+
+    try {
+      await axios.delete(`http://localhost:5000/api/listings/${listingId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setListings((prev) => prev.filter((l) => l._id !== listingId));
+    } catch (err) {
+      console.error("Failed to delete listing:", err);
+      alert("Error deleting listing.");
+    }
+  };
+
   if (loading) return <p>Loading your listings...</p>;
 
   const isFilled = (listingId) => {
@@ -118,8 +132,8 @@ export default function MyListings() {
                 <p className="filled-text">✅ Filled — {leaseText}</p>
               )}
 
-              <button onClick={() => navigate(`/listing/${listing._id}`)}>
-                View & Manage
+              <button onClick={() => deleteListing(listing._id)} className="delete-btn">
+                🗑 Delete Listing
               </button>
             </div>
           );

@@ -1,6 +1,6 @@
 // Navbar.js
 import { useState, useEffect } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 import "../styles/Navbar.css";
 import axios from "axios";
@@ -10,6 +10,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [hasGroup, setHasGroup] = useState(false);
   const [hasInvite, setHasInvite] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const fetchGroupStatus = async () => {
@@ -22,14 +23,13 @@ export default function Navbar() {
         });
 
         const group = res.data;
-        if (!group) return; // ✅ No group = skip safely
+        if (!group) return;
 
         const userId = user.id || user._id;
 
         const isMember = group.members.some((m) => m._id === userId);
         const isCreator = group.creator._id === userId;
         const hasInvitePending = group.pendingInvites.some((inv) => inv._id === userId);
-
 
         setHasGroup(isCreator || isMember);
         setHasInvite(hasInvitePending);
@@ -41,6 +41,11 @@ export default function Navbar() {
 
     fetchGroupStatus();
   }, [user]);
+
+  // ✅ Auto-close menu on route change
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
 
   const accountType = user?.accountType;
 

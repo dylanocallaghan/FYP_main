@@ -4,9 +4,12 @@
   max-width: 1200px;
   margin: auto;
   text-align: center;
+  box-sizing: border-box;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
-.listings-container h2 {
+/* Title */
+.listings-title {
   font-size: 1.8rem;
   color: #007bff;
   margin-bottom: 2rem;
@@ -36,13 +39,29 @@
   gap: 0.3rem;
 }
 
+/* Filter toggle button */
+.filter-box {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.filter-toggle {
+  background-color: #e4e4e4;
+  border: 1px solid #ccc;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
 /* Listings grid */
-.listing-grid,
 .listing-cards {
   display: flex;
   flex-wrap: wrap;
   gap: 1.5rem;
   justify-content: center;
+  box-sizing: border-box;
 }
 
 /* Individual listing card */
@@ -54,6 +73,7 @@
   width: calc(50% - 1.5rem);
   box-shadow: 0 0 10px rgba(0, 123, 255, 0.08);
   text-align: left;
+  box-sizing: border-box;
 }
 
 .listing-card h3 {
@@ -76,83 +96,11 @@
   border-radius: 5px;
   cursor: pointer;
   transition: background 0.3s ease;
+  width: 100%;
 }
 
 .listing-card button:hover {
   background-color: #0056b3;
-}
-
-/* Filled listing tag */
-.filled-text {
-  color: green;
-  font-weight: bold;
-  margin-top: 10px;
-}
-
-/* Filter toggle + container */
-.filter-box {
-  text-align: center;
-  margin-bottom: 1.5rem;
-}
-
-.filter-toggle,
-.toggle-filters-btn {
-  background-color: #e4e4e4;
-  border: 1px solid #ccc;
-  padding: 0.5rem 1rem;
-  font-weight: 500;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-bottom: 1rem;
-}
-
-.filters-box {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
-  justify-content: center;
-  padding: 15px;
-  border-radius: 8px;
-  background-color: #f8f8f8;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
-}
-
-.filters-box input,
-.filters-box select {
-  padding: 8px;
-  font-size: 14px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-
-.checkboxes {
-  display: flex;
-  gap: 15px;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-top: 10px;
-}
-
-.filter-buttons {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  width: 100%;
-  margin-top: 10px;
-}
-
-.filter-buttons button {
-  padding: 8px 16px;
-  border: none;
-  background-color: #007bff;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.filter-buttons .reset-button {
-  background-color: #6c757d;
 }
 
 /* Carousel styling */
@@ -170,39 +118,54 @@
   max-height: 200px;
 }
 
-/* Mobile responsive styles */
+/* Filled listing tag */
+.filled-text {
+  color: green;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* Mobile responsive tweaks */
 @media (max-width: 768px) {
-  .listing-card {
-    width: 100%;
+  body {
+    overflow-x: hidden;
   }
 
-  .filters-box {
+  .listings-container {
+    padding: 1rem;
+    max-width: 100%;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .filter-sort-bar {
     flex-direction: column;
     align-items: stretch;
+    gap: 0.75rem;
+    margin: 1rem 0;
   }
 
-  .filter-buttons {
-    flex-direction: column;
-  }
-
-  .filter-sort-bar,
-  .filter-bar {
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 1rem;
-  }
-
-  .filter-sort-bar select,
+  .filter-sort-bar label,
   .filter-sort-bar input[type="text"],
-  .filter-sort-bar label {
-    width: 90%;
-    max-width: 300px;
+  .filter-sort-bar select {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
-  .filters-box input,
-  .filters-box select {
+  .filter-toggle {
     width: 100%;
-    max-width: 300px;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .listing-card {
+    width: 100%;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+  }
+
+  .listing-carousel .carousel .slide img {
+    max-height: 160px;
   }
 }

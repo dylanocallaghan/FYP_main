@@ -23,14 +23,24 @@ const getListingById = async (req, res) => {
   }
 };
 
-// Create a new listing
 const createListing = async (req, res) => {
   try {
+    req.body.billsIncluded = JSON.parse(req.body.billsIncluded || "{}");
+    req.body.rules = JSON.parse(req.body.rules || "{}");
+
+    if (typeof req.body.features === "string") {
+      req.body.features = [req.body.features];
+    }
+
+    // ✅ Save just the filename instead of full path
+    req.body.images = req.files.map(file => file.filename);
+
     const newListing = new Listing(req.body);
     await newListing.save();
+
     res.status(201).json(newListing);
   } catch (err) {
-    console.error("Error creating listing:", err);
+    console.error("❌ Error creating listing:", err);
     res.status(500).json({ error: "Server error" });
   }
 };

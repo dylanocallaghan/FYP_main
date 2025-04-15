@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useJsApiLoader, Autocomplete } from "@react-google-maps/api";
+import { Autocomplete } from "@react-google-maps/api";
 import "../styles/CreateListing.css";
-
 
 const CreateListing = () => {
   const [title, setTitle] = useState("");
@@ -17,30 +16,29 @@ const CreateListing = () => {
   const [propertyType, setPropertyType] = useState("");
   const [images, setImages] = useState([]);
 
-  // New fields
   const [roomType, setRoomType] = useState("");
   const [furnishing, setFurnishing] = useState("");
   const [leaseLength, setLeaseLength] = useState("");
-  const [billsIncluded, setBillsIncluded] = useState({ internet: false, electricity: false, water: false });
+  const [billsIncluded, setBillsIncluded] = useState({
+    internet: false,
+    electricity: false,
+    water: false,
+  });
   const [rules, setRules] = useState({ noPets: false, noSmoking: false });
   const [landlordNote, setLandlordNote] = useState("");
-  const [formattedAddress, setFormattedAddress] = useState("");
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
 
-
   const [autocomplete, setAutocomplete] = useState(null);
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-    libraries: ["places"],
-  });
+
   const onLoad = (autoC) => setAutocomplete(autoC);
+
   const onPlaceChanged = () => {
     if (autocomplete !== null) {
       const place = autocomplete.getPlace();
       const formatted = place.formatted_address || place.name;
       setAddress(formatted);
-  
+
       if (place.geometry) {
         const lat = place.geometry.location.lat();
         const lng = place.geometry.location.lng();
@@ -49,7 +47,6 @@ const CreateListing = () => {
       }
     }
   };
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -72,7 +69,7 @@ const CreateListing = () => {
     formData.append("landlordNote", landlordNote);
     formData.append("billsIncluded", JSON.stringify(billsIncluded));
     formData.append("rules", JSON.stringify(rules));
-    
+
     features.split(",").forEach((feature) => {
       formData.append("features", feature.trim());
     });
@@ -82,15 +79,18 @@ const CreateListing = () => {
     }
 
     try {
-      const res = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/listings/create`,
+      const token = localStorage.getItem("token");
+
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/listings`,
         formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
+            "x-access-token": token,
           },
         }
       );
+      
 
       alert("Listing successfully created!");
     } catch (error) {
@@ -114,19 +114,16 @@ const CreateListing = () => {
 
         <div className="form-group">
           <label>Address</label>
-          {isLoaded && (
-            <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
-              <input
-                type="text"
-                placeholder="Start typing address..."
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                required
-              />
-            </Autocomplete>
-          )}
+          <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
+            <input
+              type="text"
+              placeholder="Start typing address..."
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              required
+            />
+          </Autocomplete>
         </div>
-
 
         <div className="form-group">
           <label>Price (€ per month)</label>

@@ -14,7 +14,7 @@ import {
 import "stream-chat-react/dist/css/v2/index.css";
 import "../styles/inbox.css";
 
-const CustomChannelHeader = () => {
+const CustomChannelHeader = ({ onBack }) => {
   const { channel } = useChannelStateContext();
   const members = Object.values(channel.state.members || {});
   const currentUserID = channel.getClient().userID;
@@ -30,6 +30,9 @@ const CustomChannelHeader = () => {
 
   return (
     <div className="custom-header">
+      <div className="mobile-back">
+        <button className="back-btn" onClick={onBack}>← Back</button>
+      </div>
       <Avatar name={title} size={36} />
       <div className="header-info">
         <div className="header-name"><strong>{title}</strong></div>
@@ -45,12 +48,12 @@ const CustomChannelHeader = () => {
   );
 };
 
-
 const Inbox = () => {
   const { streamClient, user, streamReady } = useAuth();
   const [channels, setChannels] = useState([]);
   const [pinned, setPinned] = useState({});
   const [openDropdownId, setOpenDropdownId] = useState(null);
+  const [activeChannel, setActiveChannel] = useState(null);
 
   const filters = {
     type: "messaging",
@@ -84,11 +87,15 @@ const Inbox = () => {
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
 
+  const handleBack = () => {
+    setActiveChannel(null);
+  };
+
   return (
     <div className="inbox-wrapper">
       <Chat client={streamClient} theme="messaging light">
-        <div className="inbox-container">
-          <div className="inbox-sidebar">
+        <div className={`inbox-container ${activeChannel ? "chat-open" : ""}`}>
+          <div className={`inbox-sidebar ${activeChannel ? "hide-mobile" : ""}`}>
             <ChannelList
               filters={filters}
               sort={sort}
@@ -102,7 +109,7 @@ const Inbox = () => {
                 )
               }
               Preview={(props) => {
-                const { channel, setActiveChannel, activeChannel } = props;
+                const { channel } = props;
                 const lastMessage = channel.state.messages?.slice(-1)[0];
                 const lastTimestamp = lastMessage?.created_at;
                 const formattedTime = formatTime(lastTimestamp);
@@ -115,8 +122,7 @@ const Inbox = () => {
                       .map((m) => m.user.name)
                       .filter((name) => name !== user.name)
                       .join(", ")}`
-                  : members.find((m) => m.user.id !== user.username)?.user?.name ||
-                    "Unknown";
+                  : members.find((m) => m.user.id !== user.username)?.user?.name || "Unknown";
 
                 return (
                   <div
@@ -153,11 +159,7 @@ const Inbox = () => {
                         >
                           ⋮
                         </button>
-                        <div
-                          className={`dropdown-menu ${
-                            openDropdownId === channel.id ? "show" : ""
-                          }`}
-                        >
+                        <div className={`dropdown-menu ${openDropdownId === channel.id ? "show" : ""}`}>
                           <button onClick={() => handlePinChannel(channel)}>
                             {pinned[channel.id] ? "Unpin Chat" : "Pin Chat"}
                           </button>
@@ -172,16 +174,19 @@ const Inbox = () => {
               }}
             />
           </div>
-          <div className="inbox-chat-area">
-            <Channel>
-              <Window>
-                <CustomChannelHeader />
-                <MessageList />
-                <MessageInput />
-              </Window>
-              <Thread />
-            </Channel>
-          </div>
+
+          {activeChannel && (
+            <div className="inbox-chat-area">
+              <Channel channel={activeChannel}>
+                <Window>
+                  <CustomChannelHeader onBack={handleBack} />
+                  <MessageList />
+                  <MessageInput />
+                </Window>
+                <Thread />
+              </Channel>
+            </div>
+          )}
         </div>
       </Chat>
     </div>
