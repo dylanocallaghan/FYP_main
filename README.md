@@ -141,7 +141,7 @@ GitHub: [@dylancallaghan](https://github.com/dylancallaghan)
 ![Register View](https://raw.githubusercontent.com/dylanocallaghan/FYP_main/main/client/public/screenshots/3d8df458-5533-4dea-baf6-54d432c47311.png)
 
 # Listing Detials View
-![Listing Detials View](https://raw.githubusercontent.com/dylanocallaghan/FYP_main/main/client/public/screenshots/0ab33bd2-81dd-4b75-a113-08375b915dd1.png)
+![Listing Detials View](https://raw.githubusercontent.com/dylanocallaghan/FYP_main/main/client/public/screenshots/ListingDetails.png)
 
 # Admin Dashboard
 ![Admin Dashboard](https://raw.githubusercontent.com/dylanocallaghan/FYP_main/main/client/public/screenshots/4ffcbd7f-f8b5-427e-9488-83e095779611.png)
