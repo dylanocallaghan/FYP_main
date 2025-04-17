@@ -125,6 +125,21 @@ const getApprovedApplicationsByOwner = async (req, res) => {
   }
 };
 
+const getApprovedApplicationByListing = async (req, res) => {
+  try {
+    const listingId = req.params.id;
+
+    const approvedApp = await Application.findOne({
+      listingId,
+      status: "approved"
+    });
+
+    res.json({ isFilled: !!approvedApp });
+  } catch (err) {
+    console.error("Error checking approved app:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
 
 module.exports = {
   createApplication,
@@ -132,6 +147,7 @@ module.exports = {
   updateApplicationStatus,
   getApplicationsForLandlord,
   deleteApplication,
-  getApprovedApplicationsByOwner 
+  getApprovedApplicationsByOwner,
+  getApprovedApplicationByListing
 };
 

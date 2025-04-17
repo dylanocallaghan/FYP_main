@@ -11,15 +11,15 @@ const userSchema = new mongoose.Schema({
   priorityOrder: { type: [String], default: [] },
   createdAt: { type: Date, default: Date.now },
 
-  // 🆕 New profile fields
-  gender: { type: String, default: "" }, // Male, Female, Non-binary, Prefer not to say
-  pronouns: { type: String, default: "" }, // he/him, she/her, etc.
+  // Added profile fields
+  gender: { type: String, default: "" }, 
+  pronouns: { type: String, default: "" },
   age: { type: Number },
   course: { type: String, default: "" },
-  year: { type: String, default: "" }, // e.g., 1st year, 2nd year
-  smoking: { type: String, default: "" }, // Yes / No
+  year: { type: String, default: "" }, 
+  smoking: { type: String, default: "" }, 
   drinking: { type: String, default: "" },
-  pets: { type: String, default: "" }, // Yes / No
+  pets: { type: String, default: "" }, 
 
   openTo: {
     smokers: { type: Boolean, default: false },
@@ -29,6 +29,10 @@ const userSchema = new mongoose.Schema({
   },
 
   bio: { type: String, default: "" },
+
+  // Forgot password support
+  resetToken: { type: String },
+  resetTokenExpiry: { type: Date },
 });
 
 // 🔐 Password hash

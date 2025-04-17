@@ -21,6 +21,8 @@ import MyListings from "./pages/MyListings";
 import Contact from './pages/Contact';
 import Quiz from "./pages/Quiz";
 import Help from './pages/Help';
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import './styles/App.css';
 
 function App() {
@@ -54,6 +56,8 @@ function App() {
             <Route path="/my-listings" element={<MyListings />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/help" element={<Help />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
           </Routes>
         </div>
       </BrowserRouter>

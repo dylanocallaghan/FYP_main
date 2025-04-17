@@ -11,6 +11,8 @@ const apiKey = process.env.STREAM_API_KEY;
 const apiSecret = process.env.STREAM_API_SECRET;
 const streamClient = StreamChat.getInstance(apiKey, apiSecret);
 
+const crypto = require("crypto");
+
 exports.registerUser = async (req, res) => {
   const {
     name,
@@ -180,4 +182,42 @@ exports.getCompatibleUsers = async (req, res) => {
     res.status(500).json({ message: "Server error." });
   }
 };
+
+exports.forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+  if (!user) return res.status(404).json({ error: "User not found" });
+
+  const token = crypto.randomBytes(32).toString("hex");
+  const expiry = Date.now() + 3600000; // 1 hour
+
+  user.resetToken = token;
+  user.resetTokenExpiry = expiry;
+  await user.save();
+
+  // In production, replace this with a real email service
+  console.log(`🔗 Reset password link: http://localhost:3000/reset-password/${token}`);
+
+  res.json({ message: "Password reset link sent to your email." });
+};
+
+exports.resetPassword = async (req, res) => {
+  const { token } = req.params;
+  const { newPassword } = req.body;
+
+  const user = await User.findOne({
+    resetToken: token,
+    resetTokenExpiry: { $gt: Date.now() },
+  });
+
+  if (!user) return res.status(400).json({ error: "Invalid or expired token" });
+
+  user.password = newPassword;
+  user.resetToken = undefined;
+  user.resetTokenExpiry = undefined;
+  await user.save();
+
+  res.json({ message: "Password reset successfully" });
+};
+
 

@@ -86,6 +86,10 @@ export default function Login({ setLoggedIn }) {
           onChange={(e) => setForm({ ...form, password: e.target.value })}
         />
         <button type="submit" className="auth-submit">Login</button>
+        <p style={{ marginTop: "1rem" }}>
+          <a href="/forgot-password" style={{ color: "#007bff" }}>Forgot Password?</a>
+        </p>
+
       </form>
       {message && <p style={{ color: "red", fontWeight: "bold" }}>{message}</p>}
     </div>

@@ -15,6 +15,7 @@ const ListingDetails = () => {
   const [groupId, setGroupId] = useState(null);
   const [alreadyApplied, setAlreadyApplied] = useState(false);
   const [leaseLength, setLeaseLength] = useState("");
+  const [isFilled, setIsFilled] = useState(false);
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -25,6 +26,19 @@ const ListingDetails = () => {
         console.error("Error fetching listing:", err);
       }
     };
+
+    const checkIfFilled = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get(`http://localhost:5000/applications/approved/listing/${id}`, {
+          headers: { "x-access-token": token }
+        });
+        setIsFilled(res.data.isFilled);
+      } catch (err) {
+        console.error("Error checking if filled:", err);
+      }
+    };
+    checkIfFilled();    
 
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -195,6 +209,10 @@ const ListingDetails = () => {
         {alreadyApplied ? (
           <div style={{ marginTop: "1rem", color: "green" }}>
             ✅ You've already applied to this listing. You cannot apply again.
+          </div>
+        ) : isFilled ? (
+          <div style={{ marginTop: "1rem", color: "red" }}>
+            🚫 This listing has already been filled and is no longer accepting applications.
           </div>
         ) : (
           <form onSubmit={handleSubmit}>

@@ -5,6 +5,7 @@ const User = require("../models/User");
 const { registerUser, loginUser } = require("../controllers/authController");
 const { getMatches } = require("../controllers/matchController");
 const { updateQuiz } = require("../controllers/authController");
+const { forgotPassword, resetPassword } = require("../controllers/authController");
 
 const JWT_SECRET = "secret123";
 
@@ -25,6 +26,8 @@ const verifyToken = (req, res, next) => {
 // ✅ Auth Routes
 router.post("/register", registerUser);
 router.post("/login", loginUser);
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password/:token", resetPassword);
 
 // Fixed /me route — returns full user object
 router.get("/me", verifyToken, async (req, res) => {

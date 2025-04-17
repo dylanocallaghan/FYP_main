@@ -22,6 +22,10 @@ h2 {
   margin-bottom: 2rem;
 }
 
+.dark {
+  color: #000;
+}
+
 .match-list {
   list-style: none;
   padding: 0;
