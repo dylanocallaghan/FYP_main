@@ -10,7 +10,6 @@ require("dotenv").config();
 // Import route files
 const authRoutes = require("./routes/authRoutes");
 const listingRoutes = require("./routes/listingRoutes");
-const chatRoutes = require("./routes/chatRoutes");
 const streamRoutes = require("./routes/streamRoutes");
 const groupRoutes = require("./routes/groupRoutes");
 const applicationRoutes = require("./routes/applicationRoutes");
@@ -30,7 +29,6 @@ mongoose.connect("mongodb://localhost:27017/student_housing")
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/listings", listingRoutes); 
-app.use("/api/messages", chatRoutes);
 app.use("/api/stream", streamRoutes);
 app.use("/api/groups", groupRoutes);
 app.use("/api/applications", applicationRoutes);
