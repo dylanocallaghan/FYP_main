@@ -1,0 +1,25 @@
+.contact-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    line-height: 1.6;
+  }
+  
+  .contact-container h1, h2 {
+    margin-top: 1.5rem;
+  }
+  
+  .contact-container ul {
+    list-style: disc;
+    padding-left: 1.5rem;
+  }
+  
+  .contact-container a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .contact-container a:hover {
+    text-decoration: underline;
+  }
+  

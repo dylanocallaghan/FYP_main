@@ -1,0 +1,16 @@
+.help-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    line-height: 1.6;
+  }
+  
+  .help-container h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .video-section {
+    margin-top: 2rem;
+  }
+  

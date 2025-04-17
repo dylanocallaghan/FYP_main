@@ -76,9 +76,9 @@ export default function Navbar() {
           {show.groups && <Link to="/my-group">👥 Groups</Link>}
           {show.invites && <Link to="/pending-invites">Invites</Link>}
           {show.admin && <Link to="/admin">Admin</Link>}
-          {accountType === "listing owner" && (
-            <Link to="/my-listings">📋 My Listings</Link>
-          )}
+          {accountType === "listing owner" && (<Link to="/my-listings">📋 My Listings</Link>)}
+          <Link to="/contact">ℹ️ About Us</Link>
+          {accountType === "student" && <Link to="/help">❓ Help</Link>}
         </div>
 
         <div className="nav-right">

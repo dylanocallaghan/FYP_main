@@ -17,7 +17,9 @@ import ListingDetails from "./pages/ListingDetails";
 import LandlordApplications from "./pages/LandlordApplications";
 import AdminDashboard from "./pages/AdminDashboard";
 import MyListings from "./pages/MyListings";
+import Contact from './pages/Contact';
 import Quiz from "./pages/Quiz";
+import Help from './pages/Help';
 import './styles/App.css';
 
 function App() {
@@ -49,6 +51,8 @@ function App() {
             <Route path="/create-group" element={<CreateGroup />} />
             <Route path="/compatibility-quiz" element={<Quiz />} />
             <Route path="/my-listings" element={<MyListings />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/help" element={<Help />} />
           </Routes>
         </div>
       </BrowserRouter>
