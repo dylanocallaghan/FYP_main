@@ -2,15 +2,21 @@
 import { useState, useEffect } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "./AuthContext";
+import { useTranslation } from "react-i18next";
 import "../styles/Navbar.css";
 import axios from "axios";
 
 export default function Navbar() {
   const { user, logoutUser } = useAuth();
+  const { i18n } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [hasGroup, setHasGroup] = useState(false);
   const [hasInvite, setHasInvite] = useState(false);
   const location = useLocation();
+
+  const changeLanguage = (e) => {
+    i18n.changeLanguage(e.target.value);
+  };
 
   useEffect(() => {
     const fetchGroupStatus = async () => {
@@ -89,6 +95,13 @@ export default function Navbar() {
               <Link to="/login">Login</Link> | <Link to="/register">Register</Link>
             </>
           )}
+          <select onChange={changeLanguage} defaultValue={i18n.language}>
+            <option value="en">🇬🇧 EN</option>
+            <option value="es">🇪🇸 ES</option>
+            <option value="fr">🇫🇷 FR</option>
+            <option value="de">🇩🇪 DE</option>
+          </select>
+
         </div>
       </div>
     </nav>

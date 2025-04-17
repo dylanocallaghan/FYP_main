@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "../styles/Login.css"; // your existing styling
+import { useTranslation } from "react-i18next";
+import "../styles/Login.css";
 
 export default function Register() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
   const [formData, setFormData] = useState({
     name: "",
     username: "",
@@ -58,34 +61,33 @@ export default function Register() {
 
   return (
     <div className="auth-container">
-      <h2 className="auth-header">Register</h2>
+      <h2 className="auth-header">{t("register")}</h2>
       <form onSubmit={handleSubmit} className="auth-form">
-        <input name="name" placeholder="Name" onChange={handleChange} required />
-        <input name="username" placeholder="Username" onChange={handleChange} required />
-        <input name="email" type="email" placeholder="Email" onChange={handleChange} required />
-        <input name="password" type="password" placeholder="Password" onChange={handleChange} required />
+        <input name="name" placeholder={t("name")} onChange={handleChange} required />
+        <input name="username" placeholder={t("username")} onChange={handleChange} required />
+        <input name="email" type="email" placeholder={t("email")} onChange={handleChange} required />
+        <input name="password" type="password" placeholder={t("password")} onChange={handleChange} required />
 
         <select name="accountType" onChange={handleChange} required>
-          <option value="student">Student</option>
-          <option value="listing owner">Listing Owner</option>
+          <option value="student">{t("student")}</option>
+          <option value="listing owner">{t("listingOwner")}</option>
         </select>
 
-        {/* Conditionally show student fields with animation */}
         <div className={`student-fields ${formData.accountType === "student" ? "visible" : "hidden"}`}>
           <select name="gender" onChange={handleChange}>
-            <option value="">Select Gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Non-binary">Non-binary</option>
-            <option value="Prefer not to say">Prefer not to say</option>
+            <option value="">{t("gender")}</option>
+            <option value="Male">{t("male")}</option>
+            <option value="Female">{t("female")}</option>
+            <option value="Non-binary">{t("nonBinary")}</option>
+            <option value="Prefer not to say">{t("preferNot")}</option>
           </select>
 
-          <input name="pronouns" placeholder="Pronouns (e.g. she/her)" onChange={handleChange} />
-          <input name="age" type="number" placeholder="Age" onChange={handleChange} />
-          <input name="course" placeholder="Course" onChange={handleChange} />
+          <input name="pronouns" placeholder={t("pronouns")} onChange={handleChange} />
+          <input name="age" type="number" placeholder={t("age")} onChange={handleChange} />
+          <input name="course" placeholder={t("course")} onChange={handleChange} />
 
           <select name="year" onChange={handleChange}>
-            <option value="">Select Year</option>
+            <option value="">{t("selectYear")}</option>
             <option value="1st Year">1st Year</option>
             <option value="2nd Year">2nd Year</option>
             <option value="3rd Year">3rd Year</option>
@@ -94,38 +96,38 @@ export default function Register() {
           </select>
 
           <select name="smoking" onChange={handleChange}>
-            <option value="">Smoker?</option>
+            <option value="">{t("smoking")}</option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
           </select>
 
           <select name="drinking" onChange={handleChange}>
-            <option value="">Drinks Alcohol?</option>
+            <option value="">{t("drinking")}</option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
           </select>
 
           <select name="pets" onChange={handleChange}>
-            <option value="">Has Pets?</option>
+            <option value="">{t("pets")}</option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
           </select>
 
           <div className="auth-checkboxes">
-            <label><input type="checkbox" name="openTo.smokers" onChange={handleChange} /> Open to living with smokers</label>
-            <label><input type="checkbox" name="openTo.petOwners" onChange={handleChange} /> Open to living with pet owners</label>
-            <label><input type="checkbox" name="openTo.mixedGender" onChange={handleChange} /> Open to mixed-gender households</label>
-            <label><input type="checkbox" name="openTo.internationalStudents" onChange={handleChange} /> Open to international students</label>
+            <label><input type="checkbox" name="openTo.smokers" onChange={handleChange} /> {t("openSmokers")}</label>
+            <label><input type="checkbox" name="openTo.petOwners" onChange={handleChange} /> {t("openPets")}</label>
+            <label><input type="checkbox" name="openTo.mixedGender" onChange={handleChange} /> {t("openGender")}</label>
+            <label><input type="checkbox" name="openTo.internationalStudents" onChange={handleChange} /> {t("openInternational")}</label>
           </div>
         </div>
 
         <textarea
           name="bio"
-          placeholder="Short bio about yourself..."
+          placeholder={t("bio")}
           onChange={handleChange}
         />
 
-        <button type="submit" className="auth-submit">Register</button>
+        <button type="submit" className="auth-submit">{t("submit")}</button>
       </form>
     </div>
   );
