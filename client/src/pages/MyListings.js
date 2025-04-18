@@ -90,7 +90,7 @@ export default function MyListings() {
         </select>
       </div>
 
-      <div className="listing-grid">
+      <div className="listing-cards">
         {filteredListings.map((listing) => {
           const leaseText = getLeaseInfo(listing._id);
 

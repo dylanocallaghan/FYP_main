@@ -73,15 +73,15 @@ export default function Navbar() {
 
       <div className={`nav-links ${menuOpen ? "open" : ""}`}>
         <div className="nav-left">
-          {show.dashboard && <Link to="/dashboard">Dashboard</Link>}
+          {show.dashboard && <Link to="/dashboard">👤 Dashboard</Link>}
           {show.listings && <Link to="/listings">🏠 Listings</Link>}
           {show.matches && <Link to="/matches">❤️ Matches</Link>}
           {show.inbox && <Link to="/inbox">📥 Inbox</Link>}
           {show.createListing && <Link to="/create">📦 Create Listing</Link>}
-          {show.applications && <Link to="/applications">Applications</Link>}
+          {show.applications && <Link to="/applications">📝 Applications</Link>}
           {show.groups && <Link to="/my-group">👥 Groups</Link>}
-          {show.invites && <Link to="/pending-invites">Invites</Link>}
-          {show.admin && <Link to="/admin">Admin</Link>}
+          {show.invites && <Link to="/pending-invites">📨 Invites</Link>}
+          {show.admin && <Link to="/admin">🛠️ Admin</Link>}
           {accountType === "listing owner" && (<Link to="/my-listings">📋 My Listings</Link>)}
           <Link to="/contact">ℹ️ About Us</Link>
           {accountType === "student" && <Link to="/help">❓ Help</Link>}
