@@ -38,7 +38,7 @@ const Help = () => {
         <iframe 
           width="100%" 
           height="315" 
-          src="https://www.youtube.com/embed/S6OmXArwtZM" 
+          src="https://www.youtube.com/embed/PeyuNrE157I" 
           title="Compatibility Quiz Guide" 
           frameBorder="0" 
           allowFullScreen
