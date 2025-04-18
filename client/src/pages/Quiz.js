@@ -3,18 +3,18 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const questions = [
-  { key: "cleanliness", text: "Cleanliness" },
-  { key: "sleepSchedule", text: "Sleep Schedule" },
-  { key: "sociability", text: "Sociability" },
-  { key: "guestPolicy", text: "Guest Policy" },
-  { key: "personalSpace", text: "Personal Space" },
-  { key: "financialHabits", text: "Financial Habits" },
-  { key: "studyHabits", text: "Study Habits" },
-  { key: "substanceUse", text: "Substance Use (e.g., alcohol, cannabis)" },
-  { key: "noiseLevel", text: "Noise Tolerance" },
-  { key: "sharingPolicy", text: "Sharing Policy (food, items, etc.)" },
-  { key: "conflictResolution", text: "Conflict Resolution Style" },
-  { key: "communicationStyle", text: "Communication Style" }
+  { key: "cleanliness", text: "I like to keep my living space clean and organized." },
+  { key: "sleepSchedule", text: "I prefer to follow a consistent sleep schedule." },
+  { key: "sociability", text: "I enjoy socializing regularly with the people I live with." },
+  { key: "guestPolicy", text: "I'm comfortable having guests over at the house." },
+  { key: "personalSpace", text: "I need personal space and time to myself at home." },
+  { key: "financialHabits", text: "I am responsible when it comes to managing money." },
+  { key: "studyHabits", text: "I prefer a quiet environment to focus on my studies." },
+  { key: "substanceUse", text: "I’m okay living with someone who drinks or uses cannabis." },
+  { key: "noiseLevel", text: "I can tolerate noise and activity in shared spaces." },
+  { key: "sharingPolicy", text: "I'm happy to share food and personal items with housemates." },
+  { key: "conflictResolution", text: "I handle disagreements calmly and try to resolve them quickly." },
+  { key: "communicationStyle", text: "I prefer open and direct communication with the people I live with." }
 ];
 
 export default function Quiz() {
@@ -96,7 +96,7 @@ export default function Quiz() {
         🧠 Compatibility Quiz
       </h2>
       <p style={{ marginBottom: "1rem", fontSize: "1rem" }}>
-        Rate each factor from 1 (Low Compatibility) to 5 (High Compatibility) <br />
+        Rate each factor from 1 (Strongly Disagree) to 5 (Strongly Agree) <br />
         and assign a priority number from <strong>1 (Most Important)</strong> to <strong>{questions.length} (Least Important)</strong>.
         </p>
       <form onSubmit={handleSubmit} style={{ display: "grid", gap: "1rem" }}>
