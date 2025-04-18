@@ -14,7 +14,7 @@ router.post("/getToken", (req, res) => {
   if (!id) return res.status(400).json({ error: "Missing user ID" });
 
   try {
-    const token = streamServerClient.createToken(id); // ✅ Fixed here
+    const token = streamServerClient.createToken(id); // Fixed here
     res.json({ token });
   } catch (err) {
     res.status(500).json({ error: "Failed to create Stream token" });

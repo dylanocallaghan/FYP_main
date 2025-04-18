@@ -25,6 +25,7 @@ export default function Listings() {
       .catch(err => console.error("Error fetching listings:", err));
   }, []);
 
+  // make filter options
   const filteredListings = listings.filter(listing => {
     const locationMatch = listing.location.toLowerCase().includes(locationFilter.toLowerCase());
     const leaseMatch = leaseFilter === "" || Number(listing.leaseLength) === Number(leaseFilter);
@@ -36,6 +37,7 @@ export default function Listings() {
     return locationMatch && leaseMatch && roomTypeMatch && furnishingMatch && propertyTypeMatch && petMatch && smokerMatch;
   });
 
+  // sort by price options
   const sortedListings = [...filteredListings].sort((a, b) => {
     if (priceSort === "low") return a.price - b.price;
     if (priceSort === "high") return b.price - a.price;

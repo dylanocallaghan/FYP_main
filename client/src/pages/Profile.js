@@ -9,6 +9,7 @@ export default function Profile() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
+  // Fetch profile from localstorage info
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -26,6 +27,7 @@ export default function Profile() {
 
   if (!profile) return <div className="profile-container">{t("loadingProfile")}</div>;
 
+  // fetch this info
   const {
     username,
     email,

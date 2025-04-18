@@ -7,6 +7,7 @@ export default function MatchResults() {
   const [matches, setMatches] = useState([]);
   const navigate = useNavigate();
 
+  // Get the best matchs(top 5)
   useEffect(() => {
     const fetchMatches = async () => {
       try {
@@ -25,6 +26,7 @@ export default function MatchResults() {
     fetchMatches();
   }, []);
 
+  // Create chat with user
   const startChatWithUser = async (otherUsername) => {
     const client = StreamChat.getInstance("yduz4z95nncj");
     const currentUser = localStorage.getItem("username");
@@ -52,6 +54,7 @@ export default function MatchResults() {
     navigate("/inbox");
   };
 
+  // Give colour gradings
   const getScoreColor = (score) => {
     if (score >= 70) return "green";
     if (score >= 50) return "orange";

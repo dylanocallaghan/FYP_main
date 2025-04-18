@@ -6,7 +6,7 @@ const { StreamChat } = require("stream-chat");
 
 const JWT_SECRET = "secret123";
 
-// 🔑 Stream credentials from .env
+//  Stream credentials from .env
 const apiKey = process.env.STREAM_API_KEY;
 const apiSecret = process.env.STREAM_API_SECRET;
 const streamClient = StreamChat.getInstance(apiKey, apiSecret);
@@ -78,6 +78,7 @@ exports.registerUser = async (req, res) => {
   }
 };
 
+// Login function
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
@@ -106,6 +107,7 @@ exports.loginUser = async (req, res) => {
   });
 };
 
+// excxport the data for the quiz
 exports.updateQuiz = async (req, res) => {
   try {
     console.log("🔥 Incoming quiz data:", req.body);
@@ -133,6 +135,7 @@ exports.updateQuiz = async (req, res) => {
   }
 };
 
+// fetch compatibleUsers
 exports.getCompatibleUsers = async (req, res) => {
   try {
     const currentUser = await User.findById(req.user.id);
@@ -183,6 +186,7 @@ exports.getCompatibleUsers = async (req, res) => {
   }
 };
 
+// forget password backend function
 exports.forgotPassword = async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email });

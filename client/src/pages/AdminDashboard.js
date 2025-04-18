@@ -32,6 +32,7 @@ const AdminDashboard = () => {
     setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
+  // Admin notes function
   const handleNoteChange = async (id, note) => {
     try {
       await axios.patch(`http://localhost:5000/admin/users/${id}/note`, { note }, { headers });
@@ -41,6 +42,7 @@ const AdminDashboard = () => {
     }
   };
 
+  // delete user
   const confirmDelete = (type, id) => setConfirm({ type, id });
   const cancelDelete = () => setConfirm(null);
 
@@ -59,12 +61,15 @@ const AdminDashboard = () => {
     }
   };
 
+  // get users applications
   const getUserApps = (userId) =>
     applications.filter((a) => a.applicantId?._id === userId);
 
+  // get user listings
   const getUserListings = (email) =>
     listings.filter((l) => l.landlordEmail === email);
 
+  // get apprroved listings
   const getApprovedForListing = (listingId) =>
     applications.find((a) => a.listingId === listingId && a.status === "approved");
 

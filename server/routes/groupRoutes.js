@@ -250,7 +250,7 @@ router.get('/mygroup', verifyToken, async (req, res) => {
     }).populate('creator members pendingInvites', 'username email');
 
     if (!group) {
-      return res.status(200).json(null); // ✅ Don't send a 404 if no group
+      return res.status(200).json(null); // Don't send a 404 if no group
     }
 
     res.status(200).json(group);

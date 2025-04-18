@@ -5,6 +5,7 @@ import "../styles/ListingDetails.css";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
 
+// Get the listing information
 const ListingDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -27,6 +28,7 @@ const ListingDetails = () => {
       }
     };
 
+    // check to see if listing is filled
     const checkIfFilled = async () => {
       try {
         const token = localStorage.getItem("token");
@@ -50,6 +52,7 @@ const ListingDetails = () => {
     fetchListing();
   }, [id]);
 
+  // Check if user has already applied
   useEffect(() => {
     const checkExistingApplication = async () => {
       const token = localStorage.getItem("token");
@@ -62,7 +65,7 @@ const ListingDetails = () => {
 
         const applications = res.data;
 
-        // ✅ Universal match logic (individual or group)
+        // Universal match logic (individual or group)
         const match = applications.find(app => {
           const groupMatch = app.groupId?._id === groupId;
           const applicantMatch =

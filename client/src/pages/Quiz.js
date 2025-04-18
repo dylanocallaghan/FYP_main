@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+// inizialise questions
 const questions = [
   { key: "cleanliness", text: "I like to keep my living space clean and organized." },
   { key: "sleepSchedule", text: "I prefer to follow a consistent sleep schedule." },
@@ -22,6 +23,7 @@ export default function Quiz() {
   const [priorities, setPriorities] = useState({});
   const navigate = useNavigate();
 
+  // Check for quiz information
   useEffect(() => {
     const fetchQuiz = async () => {
       const token = localStorage.getItem("token");
@@ -51,16 +53,19 @@ export default function Quiz() {
     };
     fetchQuiz();
   }, []);
-
+  
+  //Handle updates to quiz
   const handleChange = (key, value) => {
     setResponses({ ...responses, [key]: value });
   };
 
+  // Change pirorty numbers and order
   const handlePriorityChange = (key, value) => {
     const newPriorities = { ...priorities, [key]: parseInt(value) };
     setPriorities(newPriorities);
   };
 
+  // Function to handle the submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");

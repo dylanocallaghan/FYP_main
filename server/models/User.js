@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema({
   resetTokenExpiry: { type: Date },
 });
 
-// 🔐 Password hash
+// Password hash
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   const salt = await bcrypt.genSalt();

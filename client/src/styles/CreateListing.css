@@ -14,17 +14,17 @@
   form {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px; /* Add space between form groups */
+    gap: 20px; 
   }
   
   .form-group {
-    flex: 1 1 45%; /* Allows each form group to take up 45% of the available width */
+    flex: 1 1 45%; 
   }
   
   .form-group input,
   .form-group select,
   .form-group textarea {
-    width: 100%; /* Ensure form fields take up the full width of their container */
+    width: 100%; 
     padding: 8px;
     margin-top: 5px;
     font-size: 14px;
@@ -34,11 +34,11 @@
   
   .date-fields {
     display: flex;
-    gap: 20px; /* Add space between the date inputs */
+    gap: 20px; 
   }
   
   .date-fields .form-group {
-    flex: 1; /* Make both date inputs the same size */
+    flex: 1;
   }
   
   button.submit-button {

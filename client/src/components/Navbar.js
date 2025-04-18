@@ -7,6 +7,7 @@ import "../styles/Navbar.css";
 import axios from "axios";
 
 export default function Navbar() {
+  // Track login state and language preferences
   const { user, logoutUser } = useAuth();
   const { i18n } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -18,6 +19,7 @@ export default function Navbar() {
     i18n.changeLanguage(e.target.value);
   };
 
+  // Get group status
   useEffect(() => {
     const fetchGroupStatus = async () => {
       if (!user) return;
@@ -33,6 +35,7 @@ export default function Navbar() {
 
         const userId = user.id || user._id;
 
+        // check group information
         const isMember = group.members.some((m) => m._id === userId);
         const isCreator = group.creator._id === userId;
         const hasInvitePending = group.pendingInvites.some((inv) => inv._id === userId);
@@ -48,7 +51,7 @@ export default function Navbar() {
     fetchGroupStatus();
   }, [user]);
 
-  // ✅ Auto-close menu on route change
+  // Auto-close menu on route change
   useEffect(() => {
     setMenuOpen(false);
   }, [location.pathname]);
@@ -95,6 +98,7 @@ export default function Navbar() {
               <Link to="/login">Login</Link> | <Link to="/register">Register</Link>
             </>
           )}
+          {/* Language dropdown and auth buttons */}
           <select onChange={changeLanguage} defaultValue={i18n.language}>
             <option value="en">🇬🇧 EN</option>
             <option value="es">🇪🇸 ES</option>

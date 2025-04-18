@@ -1,8 +1,8 @@
-// server/middleware/authMiddleware.js
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const SECRET_KEY = process.env.JWT_SECRET;
 
+// verifyToken functioin for authorization
 function verifyToken(req, res, next) {
   const bearer = req.header("Authorization");
   const token = bearer?.startsWith("Bearer ") ? bearer.split(" ")[1] : req.header("x-access-token");
@@ -18,7 +18,7 @@ function verifyToken(req, res, next) {
   }
 }
 
-
+// Check if the account has an admin login
 function isAdmin(req, res, next) {
   if (req.user?.accountType !== 'admin') {
     return res.status(403).json({ error: 'Admin access only' });

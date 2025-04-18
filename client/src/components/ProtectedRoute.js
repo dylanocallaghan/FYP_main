@@ -3,8 +3,9 @@ import { useAuth } from "./AuthContext"; // adjust path if needed
 
 export default function ProtectedRoute({ children }) {
   const location = useLocation();
-  const { user } = useAuth(); // ✅ get user from context
+  const { user } = useAuth(); // get user from context
 
+  // This wrapper protects routes by checking if user is logged in
   if (!user) {
     return (
       <Navigate

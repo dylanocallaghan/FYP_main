@@ -1,14 +1,15 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { StreamChat } from "stream-chat";
 
+// Create golbal context to store auth states and functions
 const AuthContext = createContext();
-const streamClient = StreamChat.getInstance("yduz4z95nncj"); // Your app key
+const streamClient = StreamChat.getInstance("yduz4z95nncj"); // App key
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [streamReady, setStreamReady] = useState(false);
 
-  // On initial load, restore session
+  // Load user session from localStorage on initial app load
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     const token = localStorage.getItem("token");
@@ -34,6 +35,7 @@ export const AuthProvider = ({ children }) => {
     }
   }, [user]);
 
+  // Establish a secure connection to Stream Chat for the logged-in user
   const connectToStream = async (u) => {
     if (!u?.username || streamClient.userID === u.username) return;
 
@@ -66,6 +68,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+// Disconnect user from Stream Chat and cleanup state
   const disconnectFromStream = async () => {
     if (streamClient.userID) {
       await streamClient.disconnectUser();
@@ -73,6 +76,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Login handler: Save token, store user data in localStorage, and update context
   const loginUser = async (token, userData) => {
     try {
       localStorage.setItem("token", token);
@@ -92,6 +96,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Logout handler: clear session, disconnect Stream, and redirect to login page
   const logoutUser = async () => {
     await disconnectFromStream();
     localStorage.removeItem("token");

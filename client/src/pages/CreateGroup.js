@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../styles/CreateGroup.css';
 
+// Create Group function
 const CreateGroup = () => {
   const [groupName, setGroupName] = useState('');
   const navigate = useNavigate();

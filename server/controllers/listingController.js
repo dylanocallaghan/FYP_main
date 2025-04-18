@@ -32,7 +32,7 @@ const createListing = async (req, res) => {
       req.body.features = [req.body.features];
     }
 
-    // ✅ Save just the filename instead of full path
+    // Save just the filename instead of full path
     req.body.images = req.files.map(file => file.filename);
 
     const newListing = new Listing(req.body);
@@ -87,7 +87,7 @@ module.exports = {
   createListing,
   updateListing,
   deleteListing,
-  getListingsByOwner, // ✅ Must be included
+  getListingsByOwner, //  Must be included
 };
 
 
@@ -97,5 +97,5 @@ module.exports = {
   createListing,
   updateListing,
   deleteListing,
-  getListingsByOwner, // ✅ include this
+  getListingsByOwner,
 };

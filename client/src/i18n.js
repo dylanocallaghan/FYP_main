@@ -7,6 +7,7 @@ import es from "./locales/es.json";
 import fr from "./locales/fr.json";
 import de from "./locales/de.json";
 
+// Fucntion for basic translation using .json files
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)

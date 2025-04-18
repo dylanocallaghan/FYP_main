@@ -30,7 +30,7 @@ router.get("/owner", verifyToken, getListingsByOwner);
 router.get("/", getAllListings);
 router.get("/:id", getListingById);
 
-// ✅ Correct upload middleware in place
+// Correct upload middleware in place
 router.post("/", verifyToken, upload.array("images"), createListing);
 
 router.put("/:id", verifyToken, updateListing);

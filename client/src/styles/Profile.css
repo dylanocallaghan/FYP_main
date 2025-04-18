@@ -16,7 +16,7 @@
   color: #007bff;
 }
 
-/* NEW: Layout Container for Desktop Split */
+/* Layout Container for Desktop Split */
 .profile-flex {
   display: flex;
   justify-content: space-between;
@@ -96,7 +96,7 @@
   background-color: #0056b3;
 }
 
-/* NEW: Row for both boxes side-by-side */
+/* Row for both boxes side-by-side */
 .quiz-buttons-row {
   display: flex;
   flex-wrap: wrap;

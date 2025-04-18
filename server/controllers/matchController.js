@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const mongoose = require("mongoose");
 
+// Weighted compatiable score algo
 const calculateScore = (a, b) => {
   let totalDiff = 0;
   const keys = Object.keys(a);
@@ -13,6 +14,7 @@ const calculateScore = (a, b) => {
   return Math.round(((maxDiff - totalDiff) / maxDiff) * 100);
 };
 
+// Get matches using the above algo
 exports.getMatches = async (req, res) => {
   try {
     console.log("🔍 Match route hit!");
@@ -50,6 +52,7 @@ exports.getMatches = async (req, res) => {
       };
     });
 
+    // Dispaly top 5 matches from score
     const topMatches = matches
       .filter((m) => !isNaN(m.score))
       .sort((a, b) => b.score - a.score)

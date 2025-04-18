@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+// Component for requesting a password reset link
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("");
   const navigate = useNavigate();
 
+  // Submit the password reset request to backend
   const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus("");
@@ -31,6 +33,7 @@ export default function ForgotPassword() {
   return (
     <div className="auth-container">
       <h2 className="auth-header">Forgot Password</h2>
+      {/* Email form for submitting forgot-password request */}
       <form onSubmit={handleSubmit} className="auth-form">
         <input
           type="email"

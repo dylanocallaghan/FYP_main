@@ -2,9 +2,9 @@ const express = require("express");
 const router = express.Router();
 const Message = require("../models/Message");
 const pusher = require("../config/pusher");
-const { verifyToken, isAdmin } = require("../middleware/authMiddleware"); // ✅ fixed
+const { verifyToken, isAdmin } = require("../middleware/authMiddleware"); // fixed
 
-// ✅ Save message (POST /api/messages)
+// Save message 
 router.post("/", async (req, res) => {
   const { sender, receiver, message } = req.body;
 
@@ -26,7 +26,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// ✅ Get message history for a user (POST /api/messages/history)
+// Get message history for a user 
 router.post("/history", async (req, res) => {
   const { email } = req.body;
 
@@ -42,7 +42,7 @@ router.post("/history", async (req, res) => {
   }
 });
 
-// ✅ Delete message (admin only)
+// Delete message (admin only)
 router.delete("/:id", verifyToken, isAdmin, async (req, res) => {
   try {
     await Message.findByIdAndDelete(req.params.id);

@@ -4,6 +4,7 @@ import { useAuth } from "../components/AuthContext";
 import { useNavigate } from "react-router-dom";
 import '../styles/LandlordApplications.css';
 
+  // State for storing apps, filters, lookups, chat feedback
 const LandlordApplications = () => {
   const { user, streamClient } = useAuth();
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ const LandlordApplications = () => {
   const [listingNamesMap, setListingNamesMap] = useState({});
   const [chatMessage, setChatMessage] = useState("");
 
+    //  Fetch all landlord applications and extract needed usernames + listing titles
   useEffect(() => {
     if (!token) return;
 
@@ -53,6 +55,8 @@ const LandlordApplications = () => {
           
         });
 
+          //  Fetch all usernames by ID
+
         const userMap = {};
         await Promise.all([...userIds].map(async id => {
           try {
@@ -78,6 +82,7 @@ const LandlordApplications = () => {
     fetchApplications();
   }, [token]);
 
+  // Filter and sort logic for display
   useEffect(() => {
     let filtered = [...applications];
 
@@ -102,6 +107,7 @@ const LandlordApplications = () => {
     setFilteredApps(filtered);
   }, [applications, filterStatus, sortOrder, sortBy, listingNamesMap]);
 
+    // Update application status (approve/reject)
   const handleStatusUpdate = async (id, status) => {
     try {
       await axios.patch(`http://localhost:5000/applications/${id}/status`, { status }, {
@@ -115,6 +121,8 @@ const LandlordApplications = () => {
       console.error("Error updating status:", err.response?.data || err.message);
     }
   };
+
+    // Create a new chat with applicant (group or individual)
 
   const handleCreateChat = async (app) => {
     if (!streamClient || !user) return;

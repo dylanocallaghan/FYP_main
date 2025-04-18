@@ -11,7 +11,8 @@ const MyGroup = () => {
   const [showInviteForm, setShowInviteForm] = useState(false);
   const [flashMessage, setFlashMessage] = useState(""); // ✅ for animated messages
   const token = localStorage.getItem("token");
-
+  
+  // Get users group
   const fetchGroup = async () => {
     try {
       const res = await axios.get("http://localhost:5000/groups/mygroup", {
@@ -46,6 +47,7 @@ const MyGroup = () => {
     }
   }, [flashMessage]);
 
+  // leave function for user
   const handleLeave = async () => {
     if (!group?._id) return;
     try {
@@ -59,6 +61,7 @@ const MyGroup = () => {
     }
   };
 
+  // delete function for creator
   const handleDelete = async () => {
     if (!group?._id) return;
     try {
@@ -72,6 +75,7 @@ const MyGroup = () => {
     }
   };
 
+  // send invite function for creator
   const handleSendInvites = async () => {
     if (!inviteUsernames || !group?._id) return;
     const usernames = inviteUsernames.split(",").map((u) => u.trim());
@@ -99,6 +103,7 @@ const MyGroup = () => {
     }
   };
 
+  // Create group chat function
   const handleCreateGroupChat = async () => {
     try {
       await axios.post(`http://localhost:5000/groups/${group._id}/chat`, {}, {

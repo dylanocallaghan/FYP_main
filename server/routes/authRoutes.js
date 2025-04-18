@@ -9,7 +9,7 @@ const { forgotPassword, resetPassword } = require("../controllers/authController
 
 const JWT_SECRET = "secret123";
 
-// ✅ Middleware to verify and decode token
+// Middleware to verify and decode token
 const verifyToken = (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) return res.status(403).json({ error: "No token provided" });
@@ -23,7 +23,7 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-// ✅ Auth Routes
+// Auth Routes
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.post("/forgot-password", forgotPassword);
@@ -59,7 +59,7 @@ router.get("/user/:id", async (req, res) => {
 });
 
 
-// ✅ Matches
+// Matches
 router.get("/matches", verifyToken, getMatches);
 
 const { getCompatibleUsers } = require("../controllers/authController");

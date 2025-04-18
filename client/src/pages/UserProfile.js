@@ -9,6 +9,7 @@ export default function UserProfile() {
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
 
+  // Get users profile
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -24,6 +25,7 @@ export default function UserProfile() {
 
   if (!profile) return <div className="profile-container">Loading profile...</div>;
 
+  // Start these infromation areas
   const {
     name,
     username,

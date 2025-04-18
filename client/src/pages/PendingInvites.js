@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../components/AuthContext";
-import "../styles/PendingInvites.css"; // ✅ Link your local styles
+import "../styles/PendingInvites.css"; //  Link your local styles
 
 const PendingInvites = () => {
   const { user } = useAuth();
   const token = localStorage.getItem("token");
   const [group, setGroup] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [flashMessage, setFlashMessage] = useState(""); // ✅ flash msg state
+  const [flashMessage, setFlashMessage] = useState(""); //  flash msg state
 
   const fetchGroup = async () => {
     try {
@@ -35,6 +35,7 @@ const PendingInvites = () => {
     }
   }, [flashMessage]);
 
+  // Create accept function
   const handleAccept = async () => {
     try {
       await axios.patch(`http://localhost:5000/groups/${group._id}/accept`, {}, {
@@ -48,6 +49,7 @@ const PendingInvites = () => {
     }
   };
 
+  // Create decline function
   const handleDecline = async () => {
     try {
       await axios.patch(`http://localhost:5000/groups/${group._id}/decline`, {}, {

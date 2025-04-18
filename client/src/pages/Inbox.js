@@ -14,6 +14,7 @@ import {
 import "stream-chat-react/dist/css/v2/index.css";
 import "../styles/inbox.css";
 
+//  Custom channel header component showing group or direct chat info
 const CustomChannelHeader = ({ onBack }) => {
   const { channel } = useChannelStateContext();
   const members = Object.values(channel.state.members || {});
@@ -48,6 +49,8 @@ const CustomChannelHeader = ({ onBack }) => {
   );
 };
 
+// Main inbox component using Stream Chat SDK
+
 const Inbox = () => {
   const { streamClient, user, streamReady } = useAuth();
   const [channels, setChannels] = useState([]);
@@ -65,6 +68,8 @@ const Inbox = () => {
     return <div className="inbox-loading">Loading inbox...</div>;
   }
 
+  // Delete chat channel
+
   const handleDeleteChannel = async (channel) => {
     try {
       await channel.delete();
@@ -74,12 +79,15 @@ const Inbox = () => {
     }
   };
 
+    // Toggle pinning of a chat
+
   const handlePinChannel = (channel) => {
     setPinned((prev) => ({
       ...prev,
       [channel.id]: !prev[channel.id],
     }));
   };
+  // Format message time display
 
   const formatTime = (timestamp) => {
     if (!timestamp) return "";

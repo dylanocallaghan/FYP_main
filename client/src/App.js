@@ -1,3 +1,4 @@
+// Import the nessary componentes form the correct files
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LoadScript } from "@react-google-maps/api";
 import './i18n';

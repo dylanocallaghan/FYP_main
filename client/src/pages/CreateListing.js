@@ -3,6 +3,7 @@ import axios from "axios";
 import { Autocomplete } from "@react-google-maps/api";
 import "../styles/CreateListing.css";
 
+// Component for landlords to create new housing listings
 const CreateListing = () => {
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("");
@@ -31,6 +32,7 @@ const CreateListing = () => {
 
   const [autocomplete, setAutocomplete] = useState(null);
 
+  // 📍 Set up Google Maps autocomplete instance
   const onLoad = (autoC) => setAutocomplete(autoC);
 
   const onPlaceChanged = () => {
@@ -48,6 +50,7 @@ const CreateListing = () => {
     }
   };
 
+  // 📨 Submit the form data as a multipart request
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -70,6 +73,7 @@ const CreateListing = () => {
     formData.append("billsIncluded", JSON.stringify(billsIncluded));
     formData.append("rules", JSON.stringify(rules));
 
+    // Append uploaded images
     features.split(",").forEach((feature) => {
       formData.append("features", feature.trim());
     });

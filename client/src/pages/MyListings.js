@@ -37,6 +37,7 @@ export default function MyListings() {
     fetchData();
   }, [token]);
 
+  // Delete listing function
   const deleteListing = async (listingId) => {
     if (!window.confirm("Are you sure you want to delete this listing?")) return;
 
@@ -53,12 +54,14 @@ export default function MyListings() {
 
   if (loading) return <p>Loading your listings...</p>;
 
+  // Check if owner has approved
   const isFilled = (listingId) => {
     return approvedApps.some(
       (a) => a.listingId === listingId || a.listingId?._id === listingId
     );
   };
 
+  // get length of aggreement 
   const getLeaseInfo = (listingId) => {
     const app = approvedApps.find(
       (a) => a.listingId === listingId || a.listingId?._id === listingId
@@ -66,6 +69,7 @@ export default function MyListings() {
     return app ? `${app.leaseLength} month lease` : null;
   };
 
+  // Filter options for listing owner
   const filteredListings = listings.filter((listing) => {
     if (filter === "filled") return isFilled(listing._id);
     if (filter === "unfilled") return !isFilled(listing._id);

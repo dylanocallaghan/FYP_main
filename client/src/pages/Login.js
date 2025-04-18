@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../components/AuthContext";
 import "../styles/Login.css";
 
+// Create login function
 export default function Login({ setLoggedIn }) {
   const [form, setForm] = useState({ email: "", password: "" });
   const [message, setMessage] = useState("");
@@ -18,6 +19,7 @@ export default function Login({ setLoggedIn }) {
     }
   }, [location, navigate]);
 
+  // handle submit options
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
@@ -34,7 +36,7 @@ export default function Login({ setLoggedIn }) {
       if (res.ok) {
         let userWithGroup = { ...data.user };
 
-        // ✅ Fetch group using token-based /groups/mygroup route
+        // Fetch group using token-based /groups/mygroup route
         try {
           const groupRes = await fetch("http://localhost:5000/groups/mygroup", {
             headers: {

@@ -1,6 +1,7 @@
 import React from 'react';
 import '../styles/Help.css';
 
+// Help page that displays embedded tutorial videos for users
 const Help = () => {
   return (
     <div className="help-container">

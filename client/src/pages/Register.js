@@ -8,6 +8,7 @@ export default function Register() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
+  // set up this information below
   const [formData, setFormData] = useState({
     name: "",
     username: "",
@@ -31,6 +32,7 @@ export default function Register() {
     bio: "",
   });
 
+  // Function to save each field 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
@@ -48,6 +50,7 @@ export default function Register() {
     }
   };
 
+  // handle the submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {

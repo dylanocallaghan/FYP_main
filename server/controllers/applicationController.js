@@ -1,4 +1,3 @@
-// server/controllers/applicationController.js
 const Application = require("../models/Application");
 const Listing = require("../models/Listing");
 
@@ -36,7 +35,7 @@ const createApplication = async (req, res) => {
   }
 };
 
-// ✅ FIXED: Now populates both groupId AND applicantId
+// Now populates both groupId AND applicantId
 const getApplicationsByListing = async (req, res) => {
   try {
     const listingId = req.params.id;
@@ -51,6 +50,7 @@ const getApplicationsByListing = async (req, res) => {
   }
 };
 
+// Update application depending on listing owner input
 const updateApplicationStatus = async (req, res) => {
   try {
     const { id } = req.params;
@@ -77,6 +77,7 @@ const updateApplicationStatus = async (req, res) => {
   }
 };
 
+// Fetch all applications for Listing owner
 const getApplicationsForLandlord = async (req, res) => {
   try {
     const landlordEmail = req.user.email;
@@ -95,6 +96,7 @@ const getApplicationsForLandlord = async (req, res) => {
   }
 };
 
+// Delete applcation function
 const deleteApplication = async (req, res) => {
   try {
     const { id } = req.params;
@@ -107,6 +109,7 @@ const deleteApplication = async (req, res) => {
   }
 };
 
+// Aproval applicaton by owner
 const getApprovedApplicationsByOwner = async (req, res) => {
   try {
     const landlordEmail = req.user.email;

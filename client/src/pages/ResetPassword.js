@@ -7,6 +7,7 @@ export default function ResetPassword() {
   const [status, setStatus] = useState("");
   const navigate = useNavigate();
 
+  // Get the token for the user who is resetting account
   const handleReset = async (e) => {
     e.preventDefault();
     setStatus("");
@@ -18,6 +19,7 @@ export default function ResetPassword() {
         body: JSON.stringify({ newPassword }),
       });
 
+      // check if correct email sent
       const data = await res.json();
       if (res.ok) {
         setStatus("✅ Password reset! Redirecting...");
